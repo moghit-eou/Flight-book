@@ -1,0 +1,10 @@
+# Frontend dependencies/build/cache
+frontend/flight-booking-frontend/node_modules/
+frontend/flight-booking-frontend/dist/
+frontend/flight-booking-frontend/.angular/
+
+backend/target/
+
+.vscode/
+.DS_Store
+Thumbs.db
