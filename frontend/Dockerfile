@@ -2,11 +2,11 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY flight-booking-frontend/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY flight-booking-frontend/ ./
 
 EXPOSE 4200
 
