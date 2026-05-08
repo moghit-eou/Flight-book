@@ -4,9 +4,12 @@ on:
   pull_request:
     branches:
       - main
+      - feat/taha-dev
   push:
     branches:
       - main
+      - feat/taha-dev
+
 
 jobs:
   backend-ci:
