@@ -1,0 +1,67 @@
+<div class="hero">
+  <h1>✈️ Flight Book</h1>
+  <p>Trouvez vos vols en temps réel</p>
+
+  <div class="search-bar">
+    <div class="search-field">
+      <label>🛫 Départ</label>
+      <input [(ngModel)]="depIata" placeholder="Ex: CDG" maxlength="3" />
+    </div>
+    <div class="search-field">
+      <label>🛬 Arrivée</label>
+      <input [(ngModel)]="arrIata" placeholder="Ex: CMN" maxlength="3" />
+    </div>
+    <button (click)="search()" [disabled]="loading">
+      {{ loading ? 'Recherche...' : '🔍 Rechercher' }}
+    </button>
+  </div>
+</div>
+
+<div class="container">
+  @if (loading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Chargement des vols...</p>
+    </div>
+  }
+
+  @if (error) {
+    <div class="error">⚠️ {{ error }}</div>
+  }
+
+  @if (!loading && flights.length === 0 && !error) {
+    <div class="empty">Aucun vol trouvé. Essayez d'autres codes IATA.</div>
+  }
+
+  <div class="flights-grid">
+    @for (flight of flights; track flight.flight?.iata) {
+      <div class="flight-card" [class]="getStatusClass(flight.flight_status)">
+        <div class="card-header">
+          <span class="airline">{{ flight.airline?.name }}</span>
+          <span class="flight-num">{{ flight.flight?.iata }}</span>
+        </div>
+        <div class="card-body">
+          <div class="route">
+            <div class="airport">
+              <span class="code">{{ flight.departure?.iata }}</span>
+              <span class="name">{{ flight.departure?.airport }}</span>
+              <span class="time">{{ flight.departure?.scheduled | date:'HH:mm' }}</span>
+            </div>
+            <div class="arrow">✈</div>
+            <div class="airport">
+              <span class="code">{{ flight.arrival?.iata }}</span>
+              <span class="name">{{ flight.arrival?.airport }}</span>
+              <span class="time">{{ flight.arrival?.scheduled | date:'HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="date">📅 {{ flight.flight_date }}</span>
+          <span class="status" [class]="getStatusClass(flight.flight_status)">
+            {{ flight.flight_status }}
+          </span>
+        </div>
+      </div>
+    }
+  </div>
+</div>
