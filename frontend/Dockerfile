@@ -10,4 +10,4 @@ COPY flight-booking-frontend/ ./
 
 EXPOSE 4200
 
-CMD ["npm", "start", "--", "--host", "0.0.0.0"]
+CMD ["npx", "ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
