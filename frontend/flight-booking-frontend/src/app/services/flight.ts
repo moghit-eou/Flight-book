@@ -8,7 +8,10 @@ export class FlightService {
 
   constructor(private http: HttpClient) {}
 
-  getFlights(depIata?: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}?dep_iata=${depIata}`);
+  getFlights(depIata?: string, arrIata?: string): Observable<any> {
+    let url = this.apiUrl + '?';
+    if (depIata) url += `dep_iata=${depIata}&`;
+    if (arrIata) url += `arr_iata=${arrIata}`;
+    return this.http.get<any>(url);
   }
 }
