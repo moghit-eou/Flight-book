@@ -1,0 +1,19 @@
+<div class="container">
+  <h1>✈️ Vols disponibles</h1>
+
+  @if (loading) {
+    <div>Chargement...</div>
+  }
+  @if (error) {
+    <div>{{ error }}</div>
+  }
+
+  @for (flight of flights; track flight.flight?.iata) {
+    <div class="flight-card">
+      <h3>{{ flight.airline?.name }} — Vol {{ flight.flight?.iata }}</h3>
+      <p>🛫 {{ flight.departure?.airport }} ({{ flight.departure?.iata }})</p>
+      <p>🛬 {{ flight.arrival?.airport }} ({{ flight.arrival?.iata }})</p>
+      <p>📅 {{ flight.flight_date }} — {{ flight.flight_status }}</p>
+    </div>
+  }
+</div>
