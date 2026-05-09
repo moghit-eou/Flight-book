@@ -1,6 +1,6 @@
 package com.flightbooking.controller;
 
-import com.flightbooking.service.FlightService;
+import com.flightbooking.model.service.FlightService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,7 +18,8 @@ public class FlightController {
     public Object getFlights(
         @RequestParam(required = false) String dep_iata,
         @RequestParam(required = false) String arr_iata
+
     ) {
-        return flightService.getFlights(dep_iata, arr_iata);
+         return flightService.getFlights(dep_iata, arr_iata);
     }
 }
