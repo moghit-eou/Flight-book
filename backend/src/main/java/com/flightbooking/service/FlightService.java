@@ -1,29 +1,26 @@
-package com.flightbooking.service;
+package com.flightbooking.model.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.flightbooking.model.dao.FlightDAO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
+import java.util.List;
+import java.util.Map;
 @Service
 public class FlightService {
 
-    @Value("${aviationstack.api.key}")
-    private String apiKey;
+    private final FlightDAO flightDAO;
 
-    @Value("${aviationstack.api.url}")
-    private String apiUrl;
-
-    private final RestTemplate restTemplate = new RestTemplate();
-
-    public Object getFlights(String depIata, String arrIata) {
-        UriComponentsBuilder builder = UriComponentsBuilder
-            .fromHttpUrl(apiUrl)
-            .queryParam("access_key", apiKey);
-
-        if (depIata != null) builder.queryParam("dep_iata", depIata);
-        if (arrIata != null) builder.queryParam("arr_iata", arrIata);
-
-        return restTemplate.getForObject(builder.toUriString(), Object.class);
+    public FlightService(FlightDAO flightDAO) {
+        this.flightDAO = flightDAO;
     }
+
+
+    public List<Object> getFlights(String depIata, String arrIata, String status) {
+    List<Object> flights = flightDAO.getFlights(depIata, arrIata);
+    if (status == null || flights == null) return flights;
+    return flights.stream()
+        .filter(f -> status.equalsIgnoreCase(
+            (String) ((Map<?, ?>) f).get("flight_status")))
+        .toList();
+    }
+    
 }
