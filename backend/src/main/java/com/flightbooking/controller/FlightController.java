@@ -18,9 +18,8 @@ public class FlightController {
     public Object getFlights(
         @RequestParam(required = false) String dep_iata,
         @RequestParam(required = false) String arr_iata,
-        @RequestParam(required = false) String status
 
     ) {
-         return flightService.getFlights(dep_iata, arr_iata, status);
+         return flightService.getFlights(dep_iata, arr_iata);
     }
 }
