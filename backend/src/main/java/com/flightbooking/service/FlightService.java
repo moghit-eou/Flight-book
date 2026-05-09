@@ -14,13 +14,15 @@ public class FlightService {
     }
 
 
-    public List<Object> getFlights(String depIata, String arrIata, String status) {
-    List<Object> flights = flightDAO.getFlights(depIata, arrIata);
-    if (status == null || flights == null) return flights;
-    return flights.stream()
-        .filter(f -> status.equalsIgnoreCase(
-            (String) ((Map<?, ?>) f).get("flight_status")))
-        .toList();
+    public List<Object> getFlights(String depIata, String arrIata) {
+   
+        List<Object> flights = flightDAO.getFlights(depIata, arrIata);
+        if (status == null || flights == null) return flights;
+        
+        return flights.stream()
+            .filter(f -> status.equalsIgnoreCase(
+                    (String) ((Map<?, ?>) f).get("flight_status")))
+            .toList();
     }
     
 }
