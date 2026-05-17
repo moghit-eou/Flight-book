@@ -27,6 +27,7 @@ public class FlightDAOImpl implements FlightDAO {
         if (arrIata != null) builder.queryParam("arr_iata", arrIata);
 
         Map response = restTemplate.getForObject(builder.toUriString(), Map.class);
+        if (response == null || response.get("data") == null) return List.of();
         return (List<Object>) response.get("data");
     }
 }

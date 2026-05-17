@@ -1,4 +1,4 @@
-package com.flightbooking.model.service;
+package com.flightbooking.service;
 
 import com.flightbooking.model.dao.FlightDAO;
 import org.springframework.stereotype.Service;
