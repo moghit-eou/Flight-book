@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 @Repository
 public class FlightDAOImpl implements FlightDAO {
@@ -27,7 +28,7 @@ public class FlightDAOImpl implements FlightDAO {
         if (arrIata != null) builder.queryParam("arr_iata", arrIata);
 
         Map response = restTemplate.getForObject(builder.toUriString(), Map.class);
-        if (response == null || response.get("data") == null) return List.of();
+        if (response == null || response.get("data") == null) return new ArrayList<>();
         return (List<Object>) response.get("data");
     }
 }
