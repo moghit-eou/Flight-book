@@ -30,4 +30,21 @@ public class AuthService {
         userRepository.save(user);
         return new AuthResponse(user.getToken(), user.getRole());
     }
+
+    public AuthResponse login(AuthRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+        if (!request.getPassword().equals(user.getPassword()))
+            throw new IllegalArgumentException("Invalid email or password");
+
+        user.setToken(UUID.randomUUID().toString());
+        userRepository.save(user); // update
+        return new AuthResponse(user.getToken(), user.getRole());
+    }
+
+    public User validateToken(String token) {
+        return userRepository.findByToken(token)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid or expired token"));
+    }
 }
