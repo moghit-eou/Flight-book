@@ -30,4 +30,13 @@ public class BookingController {
     ) {
         return bookingService.getMyBookings(token);
     }
+
+    @DeleteMapping("/{id}")
+    public void cancel(
+        @RequestHeader("Authorization") String token,
+        @PathVariable Long id
+        ) 
+        {
+        bookingService.cancel(token, id);
+    }
 }

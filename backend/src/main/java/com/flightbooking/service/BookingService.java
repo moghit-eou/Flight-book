@@ -44,4 +44,17 @@ public class BookingService {
                 b.getDepIata(), b.getArrIata(), b.getStatus()))
             .toList();
     }
+
+
+    public void cancel(String token, Long id) {
+        User user = validateToken(token);
+        Booking booking = bookingRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+
+        if (!booking.getUser().getId().equals(user.getId()))
+            throw new IllegalArgumentException("Not your booking");
+
+        booking.setStatus("CANCELLED");
+        bookingRepository.save(booking);
+    }
 }
