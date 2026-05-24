@@ -24,8 +24,8 @@ public class AuthService {
 
         User user = new User();
         user.setEmail(request.getEmail());
-        //user.setPassword(encoder.encode(request.getPassword()));
-        user.setPassword(request.getPassword());
+        // CORRECTION ICI : Utilise encoder.encode()
+        user.setPassword(encoder.encode(request.getPassword()));
         user.setToken(UUID.randomUUID().toString());
         userRepository.save(user);
         return new AuthResponse(user.getToken(), user.getRole());
@@ -35,11 +35,12 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
             .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
-        if (!request.getPassword().equals(user.getPassword()))
+        // CORRECTION ICI : Utilise encoder.matches()
+        if (!encoder.matches(request.getPassword(), user.getPassword()))
             throw new IllegalArgumentException("Invalid email or password");
 
         user.setToken(UUID.randomUUID().toString());
-        userRepository.save(user); // update
+        userRepository.save(user);
         return new AuthResponse(user.getToken(), user.getRole());
     }
 

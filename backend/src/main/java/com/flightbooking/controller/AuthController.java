@@ -5,6 +5,9 @@ import com.flightbooking.model.dto.AuthResponse;
 import com.flightbooking.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
+
+
+@CrossOrigin(origins = "http://localhost:4201", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -24,5 +27,4 @@ public class AuthController {
     public AuthResponse login(@RequestBody AuthRequest request) {
         return authService.login(request);
     }
-
 }
