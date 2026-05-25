@@ -48,4 +48,10 @@ public class AuthService {
         return userRepository.findByToken(token)
             .orElseThrow(() -> new IllegalArgumentException("Invalid or expired token"));
     }
+
+    // Dans ton AuthController.java
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleException(IllegalArgumentException e) {
+    return ResponseEntity.status(400).body(e.getMessage());
+    }
 }

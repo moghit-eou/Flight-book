@@ -1,5 +1,24 @@
-<nav>
-  <a routerLink="/flights">Vols</a> | <a routerLink="/register">Inscription</a>
+<nav class="navbar">
+  <div class="nav-logo">
+    <i class="ti ti-plane"></i>
+    SkyBook
+  </div>
+  <div class="nav-links">
+    <a routerLink="/flights" routerLinkActive="active">
+      <i class="ti ti-plane-departure"></i> Vols
+    </a>
+    <ng-container *ngIf="!isLoggedIn">
+      <a routerLink="/register" class="nav-cta">
+        <i class="ti ti-sparkles"></i> Rejoins-nous
+      </a>
+    </ng-container>
+    <ng-container *ngIf="isLoggedIn">
+      <button class="nav-logout" (click)="logout()">
+        <i class="ti ti-logout"></i> Déconnexion
+      </button>
+    </ng-container>
+  </div>
 </nav>
 
+<div class="toast-container" id="toastContainer"></div>
 <router-outlet></router-outlet>

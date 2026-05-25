@@ -1,15 +1,21 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router'; // 1. Import nécessaire
-import { FlightsComponent } from './components/flights/flights';
-import { RegisterComponent } from './components/register/register';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  // 2. Ajoute RouterOutlet et RouterLink ici !
-  imports: [RouterOutlet, RouterLink, FlightsComponent, RegisterComponent], 
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './app.html',
+  styleUrl: './app.css'
 })
 export class AppComponent {
-  title = 'flight-booking-frontend';
+  get isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
+  constructor(private router: Router) {}
+  logout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
+  }
 }
