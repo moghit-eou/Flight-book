@@ -14,11 +14,11 @@ public class FlightRequest {
     public String getArrIata() { return arrIata; }
 
     public void validate() {
-        if (depIata != null && !depIata.isBlank() && !depIata.matches("[A-Z]{3}")) {
-            throw new IllegalArgumentException("Invalid dep_iata: must be 3 uppercase letters (e.g. CDG)");
+        if (depIata != null && !depIata.isBlank() && !depIata.matches("[A-Z]{1,3}")) {
+            throw new IllegalArgumentException("Invalid dep_iata: must be 1 to 3 uppercase letters (e.g. C or CDG)");
         }
-        if (arrIata != null && !arrIata.isBlank() && !arrIata.matches("[A-Z]{3}")) {
-            throw new IllegalArgumentException("Invalid arr_iata: must be 3 uppercase letters (e.g. JFK)");
+        if (arrIata != null && !arrIata.isBlank() && !arrIata.matches("[A-Z]{1,3}")) {
+            throw new IllegalArgumentException("Invalid arr_iata: must be 1 to 3 uppercase letters (e.g. J or JFK)");
         }
     }
 }

@@ -30,11 +30,6 @@ public class FlightController {
         request.validate();
 
         List<Object> flights = flightService.getFlights(request.getDepIata(), request.getArrIata());
-
-        if (flights.isEmpty()) {
-            throw new NoFlightsFoundException(request.getDepIata(), request.getArrIata());
-        }
-
         return new FlightResponse(flights);
     }
 }

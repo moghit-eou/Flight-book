@@ -5,6 +5,8 @@ import com.flightbooking.model.dto.AuthResponse;
 import com.flightbooking.model.entity.User;
 import com.flightbooking.model.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.flightbooking.config.UnauthorizedException;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
@@ -13,6 +15,19 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+    @PostConstruct
+    public void initDefaultAdmin() {
+        if (userRepository.findByEmail("admin@skybook.com").isEmpty()) {
+            User admin = new User();
+            admin.setEmail("admin@skybook.com");
+            admin.setPassword(encoder.encode("Admin123!"));
+            admin.setRole("ADMIN");
+            admin.setToken(UUID.randomUUID().toString());
+            userRepository.save(admin);
+            System.out.println("Default admin user created: admin@skybook.com");
+        }
+    }
 
     public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -24,8 +39,11 @@ public class AuthService {
 
         User user = new User();
         user.setEmail(request.getEmail());
-        //user.setPassword(encoder.encode(request.getPassword()));
-        user.setPassword(request.getPassword());
+        // CORRECTION ICI : Utilise encoder.encode()
+        user.setPassword(encoder.encode(request.getPassword()));
+        
+        user.setRole("USER"); // Always USER from register endpoint
+        
         user.setToken(UUID.randomUUID().toString());
         userRepository.save(user);
         return new AuthResponse(user.getToken(), user.getRole());
@@ -33,18 +51,18 @@ public class AuthService {
 
     public AuthResponse login(AuthRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+            .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
 
-        if (!request.getPassword().equals(user.getPassword()))
-            throw new IllegalArgumentException("Invalid email or password");
+        if (!encoder.matches(request.getPassword(), user.getPassword()))
+            throw new UnauthorizedException("Invalid email or password");
 
         user.setToken(UUID.randomUUID().toString());
-        userRepository.save(user); // update
+        userRepository.save(user);
         return new AuthResponse(user.getToken(), user.getRole());
     }
 
     public User validateToken(String token) {
         return userRepository.findByToken(token)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid or expired token"));
+            .orElseThrow(() -> new UnauthorizedException("Invalid or expired token"));
     }
 }

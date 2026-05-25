@@ -1,0 +1,188 @@
+<div class="history-container">
+  <div class="history-header">
+    <h1>Mes Réservations</h1>
+    <p>Consultez l'historique de vos vols réservés et téléchargez vos cartes d'embarquement.</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement de vos réservations...</p>
+    </div>
+  }
+
+  @if (error) {
+    <div class="error-box">⚠️ {{ error }}</div>
+  }
+
+  @if (!loading && bookings.length === 0 && !error) {
+    <div class="empty-state">
+      <p>Vous n'avez pas encore effectué de réservation.</p>
+      <button class="btn-primary" routerLink="/flights">Rechercher un vol</button>
+    </div>
+  }
+
+  <!-- Grille des réservations -->
+  <div class="bookings-grid" *ngIf="!loading && bookings.length > 0">
+    @for (booking of bookings; track booking.id) {
+      <div class="booking-ticket-card" [class.cancelled-card]="booking.status === 'CANCELLED'">
+        <div class="ticket-top">
+          <div class="airline-info">
+            <span class="company-name">{{ booking.airlineName }}</span>
+            <span class="flight-tag">Vol {{ booking.flightNumber }}</span>
+          </div>
+          <div class="ticket-status-badge" [class.status-confirmed]="booking.status === 'CONFIRMED'" [class.status-cancelled]="booking.status === 'CANCELLED'">
+            {{ booking.status === 'CONFIRMED' ? 'Confirmé' : 'Annulé' }}
+          </div>
+        </div>
+
+        <div class="ticket-middle">
+          <div class="route-display">
+            <div class="airport-node">
+              <span class="iata">{{ booking.departureIata }}</span>
+              <span class="time">{{ booking.departureTime | date:'HH:mm' }}</span>
+            </div>
+            <div class="connector-arrow">➔</div>
+            <div class="airport-node">
+              <span class="iata">{{ booking.arrivalIata }}</span>
+              <span class="time">{{ booking.arrivalTime | date:'HH:mm' }}</span>
+            </div>
+          </div>
+
+          <div class="ticket-divider"></div>
+
+          <div class="passenger-details-row">
+            <div>
+              <label>PASSAGER</label>
+              <div class="val">{{ booking.passengerName }}</div>
+            </div>
+            <div>
+              <label>DATE DU DEPART</label>
+              <div class="val">{{ booking.departureTime | date:'dd LLL yyyy' }}</div>
+            </div>
+            <div>
+              <label>SIÈGE</label>
+              <div class="val highlight-seat">{{ booking.seatNumber }}</div>
+            </div>
+            <div>
+              <label>CLASSE / PRIX</label>
+              <div class="val">{{ booking.classType }} (US${{ booking.price }})</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ticket-actions-footer">
+          <button 
+            class="btn-danger" 
+            [disabled]="booking.status === 'CANCELLED'"
+            (click)="cancelReservation(booking.id)">
+            Annuler
+          </button>
+          <div style="flex: 1"></div>
+          <button 
+            class="btn-print" 
+            [disabled]="booking.status === 'CANCELLED'"
+            (click)="openBoardingPass(booking)">
+            Embarquement / PDF
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- MODALE D'EMBARQUEMENT / IMPRESSION -->
+@if (showPrintModal && selectedBookingForPrint) {
+  <div class="modal-overlay" (click)="closePrintModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closePrintModal()">✕</button>
+
+      <div class="modal-header-print">
+        <h2>Votre Carte d'Embarquement</h2>
+        <p>Générez un PDF vectoriel haute fidélité en cliquant sur Imprimer.</p>
+      </div>
+
+      <!-- Ticket -->
+      <div class="boarding-pass-ticket" id="printable-boarding-pass">
+        <div class="ticket-header">
+          <div class="ticket-logo">✈ SkyBook</div>
+          <div class="ticket-class">{{ selectedBookingForPrint.classType }}</div>
+        </div>
+        <div class="ticket-body">
+          <div class="ticket-row-large">
+            <div class="ticket-airport">
+              <span class="code">{{ selectedBookingForPrint.departureIata }}</span>
+              <span class="time">{{ selectedBookingForPrint.departureTime | date:'HH:mm' }}</span>
+            </div>
+            <div class="ticket-route-arrow">➔</div>
+            <div class="ticket-airport">
+              <span class="code">{{ selectedBookingForPrint.arrivalIata }}</span>
+              <span class="time">{{ selectedBookingForPrint.arrivalTime | date:'HH:mm' }}</span>
+            </div>
+          </div>
+
+          <div class="ticket-divider-inner"></div>
+
+          <div class="ticket-details-grid">
+            <div class="detail-cell">
+              <label>NOM DU PASSAGER</label>
+              <div class="val">{{ selectedBookingForPrint.passengerName }}</div>
+            </div>
+            <div class="detail-cell">
+              <label>N° DE VOL</label>
+              <div class="val">{{ selectedBookingForPrint.flightNumber }}</div>
+            </div>
+            <div class="detail-cell">
+              <label>DATE DU VOL</label>
+              <div class="val">{{ selectedBookingForPrint.departureTime | date:'dd MMM yyyy' }}</div>
+            </div>
+            <div class="detail-cell">
+              <label>SIÈGE</label>
+              <div class="val val-accent">{{ selectedBookingForPrint.seatNumber }}</div>
+            </div>
+          </div>
+
+          <div class="ticket-details-grid" style="margin-top: 1rem;">
+            <div class="detail-cell">
+              <label>BAGAGES</label>
+              <div class="val" style="font-size: 0.85rem;">{{ selectedBookingForPrint.baggageOption }}</div>
+            </div>
+            <div class="detail-cell">
+              <label>N° DE RÉSERVATION</label>
+              <div class="val">SB-{{ selectedBookingForPrint.id }}</div>
+            </div>
+            <div class="detail-cell">
+              <label>STATUT</label>
+              <div class="val val-status">{{ selectedBookingForPrint.status }}</div>
+            </div>
+            <div class="detail-cell">
+              <label>PRIX PAYÉ</label>
+              <div class="val">US${{ selectedBookingForPrint.price }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="ticket-footer">
+          <div class="barcode">
+            <div class="bar" style="width: 2px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 4px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 1px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 3px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 5px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 2px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 4px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 1px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 3px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 5px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 2px; height: 40px; margin-left: 2px;"></div>
+            <div class="bar" style="width: 4px; height: 40px; margin-left: 2px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer-print">
+        <button class="btn-secondary" (click)="closePrintModal()">Fermer</button>
+        <button class="btn-primary" (click)="printTicket()">Imprimer / Enregistrer PDF</button>
+      </div>
+    </div>
+  </div>
+}

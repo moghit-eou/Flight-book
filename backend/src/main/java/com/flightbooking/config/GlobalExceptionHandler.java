@@ -19,6 +19,16 @@ public class GlobalExceptionHandler {
         return error(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNoResourceFound(org.springframework.web.servlet.resource.NoResourceFoundException ex) {
+        return error(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(com.flightbooking.config.UnauthorizedException.class)
+    public ResponseEntity<Map<String, Object>> handleUnauthorized(com.flightbooking.config.UnauthorizedException ex) {
+        return error(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex) {
         return error(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
