@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginComponent {
   showPassword = false;
   loading = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute, private toastService: ToastService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -29,29 +30,25 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
         next: (res) => {
           localStorage.setItem('token', res.token);
-          this.showToast('Connexion réussie ! Bienvenue', 'success', 'loginToast');
-          setTimeout(() => this.router.navigate(['/flights']), 900);
+          localStorage.setItem('role', res.role || 'USER');
+          this.toastService.show('Connexion réussie ! Bienvenue', 'success');
+          setTimeout(() => {
+            const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+            if (returnUrl) {
+              this.router.navigateByUrl(returnUrl);
+            } else if (res.role === 'ADMIN') {
+              this.router.navigate(['/admin/dashboard']);
+            } else {
+              this.router.navigate(['/flights']);
+            }
+          }, 900);
         },
         error: (err) => {
           this.loading = false;
           const msg = err?.error?.message || 'Email ou mot de passe incorrect';
-          this.showToast(msg, 'error', 'loginToast');
+          this.toastService.show(msg, 'error');
         }
       });
     }
-  }
-
-  showToast(message: string, type: 'success' | 'error', containerId: string) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `<i class="ti ${type === 'success' ? 'ti-circle-check' : 'ti-alert-circle'}"></i><span>${message}</span>`;
-    container.appendChild(toast);
-    setTimeout(() => toast.classList.add('toast-show'), 10);
-    setTimeout(() => {
-      toast.classList.remove('toast-show');
-      setTimeout(() => toast.remove(), 300);
-    }, 4000);
   }
 }

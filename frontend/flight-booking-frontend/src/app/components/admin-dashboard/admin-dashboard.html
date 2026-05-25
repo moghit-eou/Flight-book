@@ -1,0 +1,82 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1>Administration</h1>
+    <p>Tableau de bord de gestion globale des réservations de SkyBook</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement des données...</p>
+    </div>
+  }
+
+  @if (!loading && stats) {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Réservations Totales</div>
+        <div class="stat-value">{{ stats.totalBookings }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Revenu Total</div>
+        <div class="stat-value val-revenue">US${{ stats.totalRevenue }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Prix Moyen</div>
+        <div class="stat-value">US${{ stats.averagePrice }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Comptes Utilisateurs</div>
+        <div class="stat-value">{{ stats.totalUsers }}</div>
+      </div>
+    </div>
+
+    <div class="bookings-section">
+      <h2>Toutes les réservations</h2>
+      <div class="table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Passager</th>
+              <th>Vol</th>
+              <th>Trajet</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (b of bookings; track b.id) {
+              <tr>
+                <td>#{{ b.id }}</td>
+                <td>{{ b.bookingDate | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>
+                  <strong>{{ b.passengerName }}</strong><br>
+                  <small>{{ b.passengerEmail }}</small>
+                </td>
+                <td>{{ b.airlineName }} ({{ b.flightNumber }})</td>
+                <td>{{ b.departureIata }} ➔ {{ b.arrivalIata }}</td>
+                <td>US${{ b.price }}</td>
+                <td>
+                  <span class="status-badge" [class.confirmed]="b.status === 'CONFIRMED'" [class.cancelled]="b.status === 'CANCELLED'">
+                    {{ b.status === 'CONFIRMED' ? 'Confirmé' : 'Annulé' }}
+                  </span>
+                </td>
+                <td>
+                  <button 
+                    class="btn-danger-sm" 
+                    [disabled]="b.status === 'CANCELLED'"
+                    (click)="cancelReservation(b.id)">
+                    Annuler
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

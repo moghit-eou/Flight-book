@@ -1,0 +1,74 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BookingService } from '../../services/booking';
+import { Router } from '@angular/router';
+import { ToastService } from '../../services/toast.service';
+
+@Component({
+  selector: 'app-admin-dashboard',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './admin-dashboard.html',
+  styleUrl: './admin-dashboard.css'
+})
+export class AdminDashboardComponent implements OnInit {
+  stats: any = null;
+  bookings: any[] = [];
+  loading = false;
+  
+  constructor(
+    private bookingService: BookingService, 
+    private router: Router,
+    private toastService: ToastService
+  ) {}
+
+  ngOnInit() {
+    const role = localStorage.getItem('role');
+    if (role !== 'ADMIN') {
+      this.router.navigate(['/']);
+      return;
+    }
+    this.loadData();
+  }
+
+  loadData() {
+    this.loading = true;
+    this.bookingService.getAdminStats().subscribe({
+      next: (data) => {
+        this.stats = data;
+        this.bookingService.getAllBookings().subscribe({
+          next: (books) => {
+            this.bookings = books.sort((a, b) => b.id - a.id);
+            this.loading = false;
+          },
+          error: (err) => {
+            this.loading = false;
+            this.toastService.show("Erreur chargement des réservations", "error");
+          }
+        });
+      },
+      error: (err) => {
+        this.loading = false;
+        if (err?.status === 401 || err?.status === 403) {
+          this.router.navigate(['/login']);
+        } else {
+          this.toastService.show("Erreur chargement des statistiques", "error");
+        }
+      }
+    });
+  }
+
+  cancelReservation(id: number) {
+    if (confirm("Confirmez-vous l'annulation en tant qu'administrateur ?")) {
+      this.bookingService.cancelBooking(id).subscribe({
+        next: () => {
+          this.toastService.show("Réservation annulée (Admin).", "success");
+          this.loadData();
+        },
+        error: (err) => {
+          this.toastService.show("Erreur annulation admin : " + (err?.error?.message || "Erreur serveur"), "error");
+        }
+      });
+    }
+  }
+}

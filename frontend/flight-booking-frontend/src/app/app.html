@@ -1,24 +1,45 @@
 <nav class="navbar">
-  <div class="nav-logo">
-    <i class="ti ti-plane"></i>
-    SkyBook
+  <div class="nav-logo" routerLink="/flights" style="cursor: pointer;">
+    ✈️ SkyBook
   </div>
   <div class="nav-links">
     <a routerLink="/flights" routerLinkActive="active">
-      <i class="ti ti-plane-departure"></i> Vols
+      🛫 Vols
     </a>
-    <ng-container *ngIf="!isLoggedIn">
-      <a routerLink="/register" class="nav-cta">
-        <i class="ti ti-sparkles"></i> Rejoins-nous
-      </a>
-    </ng-container>
-    <ng-container *ngIf="isLoggedIn">
+    
+    @if (isLoggedIn) {
+      @if (isAdmin) {
+        <a routerLink="/admin/dashboard" routerLinkActive="active">
+          🛠️ Administration
+        </a>
+      } @else {
+        <a routerLink="/my-bookings" routerLinkActive="active">
+          📅 Mes Réservations
+        </a>
+      }
+      
       <button class="nav-logout" (click)="logout()">
-        <i class="ti ti-logout"></i> Déconnexion
+        🚪 Déconnexion
       </button>
-    </ng-container>
+    } @else {
+      <a routerLink="/login" routerLinkActive="active">Connexion</a>
+      <a routerLink="/register" class="nav-cta">
+        ✨ Rejoins-nous
+      </a>
+    }
   </div>
 </nav>
 
-<div class="toast-container" id="toastContainer"></div>
 <router-outlet></router-outlet>
+
+<!-- Toast Notifications -->
+<div *ngIf="toast" class="toast-popup" [ngClass]="toast.type">
+  <span class="toast-icon">
+    <ng-container [ngSwitch]="toast.type">
+      <svg *ngSwitchCase="'error'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      <svg *ngSwitchCase="'success'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <svg *ngSwitchCase="'info'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+    </ng-container>
+  </span>
+  <span class="toast-message">{{ toast.text }}</span>
+</div>

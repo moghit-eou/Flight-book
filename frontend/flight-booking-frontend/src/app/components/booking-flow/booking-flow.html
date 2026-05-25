@@ -1,0 +1,402 @@
+<div class="booking-container">
+  <!-- Barre d'étapes (Progression) -->
+  <div class="steps-progress" *ngIf="currentStep <= 4">
+    <div class="step-line">
+      <div class="step-progress-fill" [style.width.%]="(currentStep - 1) * 33.33"></div>
+    </div>
+    <div class="step-node" [class.active]="currentStep >= 1" [class.current]="currentStep === 1">
+      <div class="node-circle">1</div>
+      <span>Infos</span>
+    </div>
+    <div class="step-node" [class.active]="currentStep >= 2" [class.current]="currentStep === 2">
+      <div class="node-circle">2</div>
+      <span>Siège</span>
+    </div>
+    <div class="step-node" [class.active]="currentStep >= 3" [class.current]="currentStep === 3">
+      <div class="node-circle">3</div>
+      <span>Options</span>
+    </div>
+    <div class="step-node" [class.active]="currentStep >= 4" [class.current]="currentStep === 4">
+      <div class="node-circle">4</div>
+      <span>Paiement</span>
+    </div>
+  </div>
+
+  <div class="booking-layout" *ngIf="currentStep <= 4">
+    <!-- Panneau principal des étapes -->
+    <div class="booking-main">
+      
+      <!-- ÉTAPE 1 : INFOS VOYAGEUR -->
+      <div *ngIf="currentStep === 1" class="step-panel animate-fade">
+        <h2>🧑‍✈️ Qui voyage ?</h2>
+        <p class="step-desc">Veuillez saisir les informations du passager telles qu'elles apparaissent sur sa pièce d'identité.</p>
+
+        <form [formGroup]="passengerForm" class="passenger-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nom complet (Prénom & Nom) *</label>
+              <input formControlName="passengerName" placeholder="Ex: Mohamed Alami" />
+              <div class="error-msg" *ngIf="passengerForm.get('passengerName')?.touched && passengerForm.get('passengerName')?.invalid">
+                Nom complet requis (3 caractères min).
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Adresse e-mail de contact *</label>
+              <input formControlName="passengerEmail" type="email" placeholder="alami@example.com" />
+              <div class="error-msg" *ngIf="passengerForm.get('passengerEmail')?.touched && passengerForm.get('passengerEmail')?.invalid">
+                Adresse e-mail valide requise.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Genre *</label>
+              <select formControlName="passengerGender">
+                <option value="M">Homme</option>
+                <option value="F">Femme</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Date de naissance *</label>
+              <input formControlName="passengerDob" type="date" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nationalité *</label>
+              <input formControlName="passengerNationality" placeholder="Ex: Maroc" />
+            </div>
+            <div class="form-group">
+              <label>Type de pièce d'identité *</label>
+              <select formControlName="passengerIdType">
+                <option value="PASSPORT">Passeport</option>
+                <option value="CIN">Carte d'Identité Nationale (CIN)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Numéro de pièce d'identité *</label>
+              <input formControlName="passengerIdNumber" placeholder="Ex: AE123456" />
+              <div class="error-msg" *ngIf="passengerForm.get('passengerIdNumber')?.touched && passengerForm.get('passengerIdNumber')?.invalid">
+                Numéro d'identité requis.
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- ÉTAPE 2 : CHOIX DU SIÈGE -->
+      <div *ngIf="currentStep === 2" class="step-panel animate-fade">
+        <h2>💺 Choisissez votre siège</h2>
+        <p class="step-desc">Sélectionnez le siège de votre choix. Les sièges <strong>Premium</strong> situés à l'avant offrent plus d'espace pour les jambes (+25$).</p>
+
+        <!-- Légende des sièges -->
+        <div class="seat-legend">
+          <div class="legend-item"><span class="legend-box seat-available-standard"></span> Standard</div>
+          <div class="legend-item"><span class="legend-box seat-available-premium"></span> Premium (+25$)</div>
+          <div class="legend-item"><span class="legend-box seat-selected"></span> Sélectionné</div>
+          <div class="legend-item"><span class="legend-box seat-occupied"></span> Occupé</div>
+        </div>
+
+        <!-- Plan de cabine interactif -->
+        <div class="cabin-container">
+          <div class="airplane-nose"></div>
+          <div class="airplane-cabin">
+            <div class="cabin-aisle-label left">Fenêtre</div>
+            <div class="cabin-aisle-label right">Fenêtre</div>
+            
+            <div class="seat-grid">
+              @for (rowNum of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]; track rowNum) {
+                <div class="seat-row">
+                  <span class="row-number">{{ rowNum }}</span>
+                  
+                  <!-- Sièges A, B -->
+                  <div class="seat-pair">
+                    @for (colLetter of ['A', 'B']; track colLetter) {
+                      @let seat = seats[(rowNum - 1) * 4 + (colLetter === 'A' ? 0 : 1)];
+                      <button 
+                        [class.premium]="seat.type === 'Premium'"
+                        [class.occupied]="seat.occupied"
+                        [class.selected]="selectedSeat?.id === seat.id"
+                        [disabled]="seat.occupied"
+                        (click)="selectSeat(seat)"
+                        class="seat-btn">
+                        {{ seat.id }}
+                      </button>
+                    }
+                  </div>
+
+                  <span class="aisle-spacer"></span>
+
+                  <!-- Sièges C, D -->
+                  <div class="seat-pair">
+                    @for (colLetter of ['C', 'D']; track colLetter) {
+                      @let seat = seats[(rowNum - 1) * 4 + (colLetter === 'C' ? 2 : 3)];
+                      <button 
+                        [class.premium]="seat.type === 'Premium'"
+                        [class.occupied]="seat.occupied"
+                        [class.selected]="selectedSeat?.id === seat.id"
+                        [disabled]="seat.occupied"
+                        (click)="selectSeat(seat)"
+                        class="seat-btn">
+                        {{ seat.id }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3 : PERSONALISATION / ADD-ONS -->
+      <div *ngIf="currentStep === 3" class="step-panel animate-fade">
+        <h2>✨ Personnalisez votre voyage</h2>
+        <p class="step-desc">Ajoutez des options de confort exclusives pour un voyage en toute sérénité.</p>
+
+        <div class="addons-list">
+          <!-- Option Embarquement Prioritaire -->
+          <div class="addon-card" [class.active]="priorityBoarding" (click)="priorityBoarding = !priorityBoarding">
+            <div class="addon-check">
+              <span class="checkbox-custom" [class.checked]="priorityBoarding"></span>
+            </div>
+            <div class="addon-info">
+              <span class="badge-addon">Recommandé</span>
+              <h3>🏃‍♂️ Embarquement Prioritaire</h3>
+              <p>Évitez les files d'attente. Soyez le premier à embarquer et installez vos bagages en cabine en priorité.</p>
+            </div>
+            <div class="addon-price">+US$15.00</div>
+          </div>
+
+          <!-- Option Assurance Voyage -->
+          <div class="addon-card" [class.active]="travelInsurance" (click)="travelInsurance = !travelInsurance">
+            <div class="addon-check">
+              <span class="checkbox-custom" [class.checked]="travelInsurance"></span>
+            </div>
+            <div class="addon-info">
+              <span class="badge-addon">Sérénité</span>
+              <h3>🛡️ Assurance Voyage Intégrale</h3>
+              <p>Remboursement garanti à 100% en cas d'annulation médicale ou retard de bagages jusqu'à 2 000 US$.</p>
+            </div>
+            <div class="addon-price">+US$20.00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 4 : CHECKOUT / PAIEMENT -->
+      <div *ngIf="currentStep === 4" class="step-panel animate-fade">
+        <h2>💳 Finalisez votre paiement</h2>
+        <p class="step-desc">Veuillez renseigner vos coordonnées bancaires (simulation sécurisée 3D Secure).</p>
+
+        <!-- Carte Bancaire Stylisée Animée -->
+        <div class="credit-card-preview">
+          <div class="card-chip"></div>
+          <div class="card-logo">VISA</div>
+          <div class="card-number">
+            {{ paymentForm.value.cardNumber ? (paymentForm.value.cardNumber | slice:0:4) + ' ' + (paymentForm.value.cardNumber | slice:4:8) + ' ' + (paymentForm.value.cardNumber | slice:8:12) + ' ' + (paymentForm.value.cardNumber | slice:12:16) : '•••• •••• •••• ••••' }}
+          </div>
+          <div class="card-footer-row">
+            <div class="card-holder">
+              <label>CARDHOLDER</label>
+              <div class="val">{{ paymentForm.value.cardName || 'NOM PRENOM' }}</div>
+            </div>
+            <div class="card-expiry">
+              <label>EXPIRES</label>
+              <div class="val">{{ paymentForm.value.cardExpiry || 'MM/AA' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <form [formGroup]="paymentForm" class="payment-form">
+          <div class="form-group">
+            <label>Nom complet sur la carte *</label>
+            <input formControlName="cardName" placeholder="Ex: MOHAMED ALAMI" style="text-transform: uppercase;" />
+            <div class="error-msg" *ngIf="paymentForm.get('cardName')?.touched && paymentForm.get('cardName')?.invalid">
+              Nom du titulaire requis.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Numéro de carte bancaire *</label>
+            <input formControlName="cardNumber" maxlength="16" placeholder="1234567890123456" />
+            <div class="error-msg" *ngIf="paymentForm.get('cardNumber')?.touched && paymentForm.get('cardNumber')?.invalid">
+              Numéro de carte à 16 chiffres requis.
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date d'expiration *</label>
+              <input formControlName="cardExpiry" placeholder="MM/AA" maxlength="5" />
+              <div class="error-msg" *ngIf="paymentForm.get('cardExpiry')?.touched && paymentForm.get('cardExpiry')?.invalid">
+                Format MM/AA requis.
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Cryptogramme visuel (CVV) *</label>
+              <input formControlName="cardCvv" type="password" maxlength="3" placeholder="123" />
+              <div class="error-msg" *ngIf="paymentForm.get('cardCvv')?.touched && paymentForm.get('cardCvv')?.invalid">
+                3 chiffres requis.
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Boutons de Navigation inférieure -->
+      <div class="wizard-buttons">
+        <button class="btn-secondary" (click)="prevStep()" *ngIf="currentStep > 1">
+          ← Retour
+        </button>
+        <div style="flex: 1"></div>
+        <button class="btn-primary" (click)="nextStep()" *ngIf="currentStep < 4">
+          Continuer
+        </button>
+        <button class="btn-success" [disabled]="loading" (click)="confirmPayment()" *ngIf="currentStep === 4">
+          {{ loading ? 'Validation en cours...' : 'Confirmer & Payer US$' + getTotalPrice() }}
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Barre latérale de récapitulatif détaillé -->
+    <div class="booking-sidebar">
+      <div class="sidebar-card">
+        <h3>📊 Récapitulatif du prix</h3>
+        
+        <div class="sidebar-flight-summary">
+          <div class="airline-logo">{{ flightData.flight.airline?.name }}</div>
+          <div class="sidebar-route">
+            <strong>{{ flightData.flight.departure?.iata }}</strong> ✈ <strong>{{ flightData.flight.arrival?.iata }}</strong>
+          </div>
+          <div class="sidebar-class">{{ flightData.classType }}</div>
+        </div>
+
+        <div class="price-breakdown">
+          <div class="breakdown-item">
+            <span>Billet d'avion (x1)</span>
+            <strong>US${{ flightData.price }}</strong>
+          </div>
+          <div class="breakdown-item" *ngIf="selectedSeat">
+            <span>Siège sélectionné ({{ selectedSeat.id }} - {{ selectedSeat.type }})</span>
+            <strong>+US${{ selectedSeat.price }}.00</strong>
+          </div>
+          <div class="breakdown-item" *ngIf="priorityBoarding">
+            <span>🏃‍♂️ Embarquement Prioritaire</span>
+            <strong>+US$15.00</strong>
+          </div>
+          <div class="breakdown-item" *ngIf="travelInsurance">
+            <span>🛡️ Assurance Voyage</span>
+            <strong>+US$20.00</strong>
+          </div>
+        </div>
+
+        <div class="total-row">
+          <span>Prix total</span>
+          <span class="total-price">US${{ getTotalPrice() }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 5 : CONFIRMATION DE SUCCÈS & CARTE D'EMBARQUEMENT PDF -->
+  <div class="booking-success-view animate-fade" *ngIf="currentStep === 5 && createdBooking">
+    <div class="success-header">
+      <div class="check-animation">✔</div>
+      <h1>Réservation validée avec succès !</h1>
+      <p>Votre voyage est prêt. Téléchargez ou imprimez votre carte d'embarquement ci-dessous.</p>
+    </div>
+
+    <!-- Carte d'embarquement Stylisée (Premium Ticket) -->
+    <div class="boarding-pass-ticket" id="printable-boarding-pass">
+      <div class="ticket-header">
+        <div class="ticket-logo">✈ SkyBook</div>
+        <div class="ticket-class">{{ createdBooking.classType }}</div>
+      </div>
+      <div class="ticket-body">
+        <div class="ticket-row-large">
+          <div class="ticket-airport">
+            <span class="code">{{ createdBooking.departureIata }}</span>
+            <span class="time">{{ createdBooking.departureTime | date:'HH:mm' }}</span>
+          </div>
+          <div class="ticket-route-arrow">➔</div>
+          <div class="ticket-airport">
+            <span class="code">{{ createdBooking.arrivalIata }}</span>
+            <span class="time">{{ createdBooking.arrivalTime | date:'HH:mm' }}</span>
+          </div>
+        </div>
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-details-grid">
+          <div class="detail-cell">
+            <label>NOM DU PASSAGER</label>
+            <div class="val">{{ createdBooking.passengerName }}</div>
+          </div>
+          <div class="detail-cell">
+            <label>N° DE VOL</label>
+            <div class="val">{{ createdBooking.flightNumber }}</div>
+          </div>
+          <div class="detail-cell">
+            <label>DATE DU VOL</label>
+            <div class="val">{{ createdBooking.departureTime | date:'dd MMM yyyy' }}</div>
+          </div>
+          <div class="detail-cell">
+            <label>SIÈGE</label>
+            <div class="val val-accent">{{ createdBooking.seatNumber }}</div>
+          </div>
+        </div>
+
+        <div class="ticket-details-grid" style="margin-top: 1rem;">
+          <div class="detail-cell">
+            <label>BAGAGES</label>
+            <div class="val" style="font-size: 0.85rem;">{{ createdBooking.baggageOption }}</div>
+          </div>
+          <div class="detail-cell">
+            <label>N° DE RÉSERVATION</label>
+            <div class="val">SB-{{ createdBooking.id }}</div>
+          </div>
+          <div class="detail-cell">
+            <label>STATUT</label>
+            <div class="val val-status">{{ createdBooking.status }}</div>
+          </div>
+          <div class="detail-cell">
+            <label>PRIX PAYÉ</label>
+            <div class="val">US${{ createdBooking.price }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="ticket-footer">
+        <div class="barcode">
+          <div class="bar" style="width: 2px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 4px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 1px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 3px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 5px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 2px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 4px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 1px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 3px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 5px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 2px; height: 40px; margin-left: 2px;"></div>
+          <div class="bar" style="width: 4px; height: 40px; margin-left: 2px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions post-réservation -->
+    <div class="success-actions-bar">
+      <button class="btn-secondary" (click)="navigateToFlights()">
+        🔍 Rechercher un autre vol
+      </button>
+      <button class="btn-primary" (click)="printBoardingPass()">
+        🖨️ Télécharger en PDF / Imprimer
+      </button>
+      <button class="btn-success" (click)="navigateToHistory()">
+        📅 Voir mes réservations
+      </button>
+    </div>
+  </div>
+</div>

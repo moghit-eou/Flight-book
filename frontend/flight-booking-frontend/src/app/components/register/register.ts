@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +17,7 @@ export class RegisterComponent {
   showPassword = false;
   loading = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute, private toastService: ToastService) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -46,8 +47,15 @@ export class RegisterComponent {
       this.authService.register(email, password).subscribe({
         next: () => {
           this.loading = false;
-          this.showToast('Compte créé avec succès ! Bienvenue', 'success', 'registerToast');
-          setTimeout(() => this.router.navigate(['/login']), 1500);
+          this.toastService.show('Compte créé avec succès ! Bienvenue', 'success');
+          setTimeout(() => {
+            const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+            if (returnUrl) {
+              this.router.navigate(['/login'], { queryParams: { returnUrl } });
+            } else {
+              this.router.navigate(['/login']);
+            }
+          }, 1500);
         },
         error: (err) => {
           this.loading = false;
@@ -58,23 +66,9 @@ export class RegisterComponent {
           } else if (err?.error?.message) {
             msg = err.error.message;
           }
-          this.showToast(msg, 'error', 'registerToast');
+          this.toastService.show(msg, 'error');
         }
       });
     }
-  }
-
-  showToast(message: string, type: 'success' | 'error', containerId: string) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `<i class="ti ${type === 'success' ? 'ti-circle-check' : 'ti-alert-circle'}"></i><span>${message}</span>`;
-    container.appendChild(toast);
-    setTimeout(() => toast.classList.add('toast-show'), 10);
-    setTimeout(() => {
-      toast.classList.remove('toast-show');
-      setTimeout(() => toast.remove(), 300);
-    }, 4000);
   }
 }

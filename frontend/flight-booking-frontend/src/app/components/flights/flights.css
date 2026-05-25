@@ -102,6 +102,7 @@
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
   border-top: 4px solid #e94560;
+  cursor: pointer;
 }
 
 .flight-card:hover {
@@ -198,3 +199,406 @@
 
 .cancelled { border-top-color: #e53e3e; }
 .cancelled .status { background: #fff5f5; color: #e53e3e; }
+
+/* Styles additionnels - Cartes de vol & Modale Premium */
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.price-badge {
+  background: #ebf8ff;
+  color: #2b6cb0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+}
+
+.btn-select-flight-card {
+  background: #2563eb;
+  color: white;
+  border: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+  padding: 20px 0;
+}
+.page-btn {
+  background: #fff;
+  border: 1px solid #c2c9d6;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #2c3e50;
+  transition: all 0.2s;
+}
+.page-btn:hover:not(:disabled) {
+  background: #185FA5;
+  color: #fff;
+  border-color: #185FA5;
+}
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.page-info {
+  font-weight: 600;
+  color: #64748b;
+}
+.btn-select-flight-card:hover {
+  background: #1d4ed8;
+}
+
+/* Modale de Détails Premium */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1.5rem;
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-content {
+  background: white;
+  width: 100%;
+  max-width: 780px;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  padding: 2rem;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.modal-header h2 {
+  font-size: 1.8rem;
+  color: #0f172a;
+  margin-bottom: 0.3rem;
+}
+
+.modal-route-name {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+}
+
+.modal-flight-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  align-items: center;
+}
+
+.badge-depart {
+  background: #1e3a8a;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Timeline */
+.route-timeline {
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  border: 1px solid #f1f5f9;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.timeline-item .time {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  width: 55px;
+}
+
+.timeline-item .bullet {
+  width: 14px;
+  height: 14px;
+  border: 3px solid #1e3a8a;
+  background: white;
+  border-radius: 50%;
+  margin-top: 5px;
+  z-index: 2;
+}
+
+.timeline-item .bullet-end {
+  border-color: #10b981;
+}
+
+.timeline-item .details {
+  flex: 1;
+}
+
+.timeline-item .airport-name {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+.timeline-item .terminal {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+}
+
+.layover-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0;
+  padding-left: 55px;
+}
+
+.layover-divider .line {
+  width: 14px;
+  height: 35px;
+  border-left: 2px dashed #cbd5e1;
+  margin-left: 6px;
+}
+
+.layover-divider .layover-info {
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  color: #b45309;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Classes d'économie */
+.class-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.class-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.class-card:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+.class-card.selected {
+  border-color: #2563eb;
+  background: #f8fafc;
+}
+
+.class-card.highlight {
+  border-color: #10b981;
+}
+
+.class-card.highlight.selected {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.best-value {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #10b981;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.radio-indicator {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.radio-bullet {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.class-card.selected .radio-bullet {
+  border-color: #2563eb;
+}
+
+.class-card.highlight.selected .radio-bullet {
+  border-color: #10b981;
+}
+
+.radio-bullet.active::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  background: #2563eb;
+  border-radius: 50%;
+}
+
+.class-card.highlight.selected .radio-bullet.active::after {
+  background: #10b981;
+}
+
+.class-card h3 {
+  font-size: 1.1rem;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.class-card .price {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 1rem;
+}
+
+.class-card .features {
+  list-style: none;
+  font-size: 0.85rem;
+  color: #475569;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.class-card .features li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.class-card .features li.included {
+  color: #1e293b;
+}
+
+.class-card .features li.excluded {
+  color: #94a3b8;
+}
+
+/* Footer Modal */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.total-price-summary {
+  display: flex;
+  flex-direction: column;
+}
+
+.total-price-summary .label {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.total-price-summary .value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.btn-continue {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.9rem 2.2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-continue:hover {
+  background: #1d4ed8;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
