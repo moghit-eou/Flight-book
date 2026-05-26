@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FlightService } from '../../services/flight';
@@ -19,14 +19,10 @@ export class FlightsComponent implements OnInit {
   depIata = '';
   arrIata = '';
   searched = false;
-
-  // Pagination
   currentPage = 1;
   pageSize = 9;
   paginatedFlights: any[] = [];
   totalPages = 1;
-
-  // Sélection et modale de détails
   selectedFlight: any = null;
   selectedClassType: 'Basic' | 'Standard' | 'Plus' = 'Standard';
   showDetailsModal = false;
@@ -35,24 +31,24 @@ export class FlightsComponent implements OnInit {
     private flightService: FlightService,
     private bookingService: BookingService,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    // Affiche les vols en cache au chargement
     this.search();
   }
 
   search() {
-    this.depIata = (this.depIata || '').trim().toUpperCase();
-    this.arrIata = (this.arrIata || '').trim().toUpperCase();
+    const dep = (this.depIata || '').trim().toUpperCase();
+    const arr = (this.arrIata || '').trim().toUpperCase();
 
     this.loading = true;
     this.flights = [];
     this.paginatedFlights = [];
     this.currentPage = 1;
 
-    this.flightService.getFlights(this.depIata, this.arrIata).subscribe({
+    this.flightService.getFlights(dep, arr).subscribe({
       next: (data) => {
         this.flights = data?.data || [];
         if (this.flights.length === 0 && data?.error) {
@@ -61,6 +57,7 @@ export class FlightsComponent implements OnInit {
         this.updatePagination();
         this.loading = false;
         this.searched = true;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         if (err?.name === 'TimeoutError') {
@@ -73,6 +70,7 @@ export class FlightsComponent implements OnInit {
         this.loading = false;
         this.searched = true;
         this.updatePagination();
+        this.cdr.detectChanges();
       },
     });
   }
