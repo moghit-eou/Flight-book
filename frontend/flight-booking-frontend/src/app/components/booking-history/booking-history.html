@@ -23,7 +23,10 @@
   }
 
   <!-- Grille des réservations -->
-  <div class="bookings-grid" *ngIf="!loading && bookings.length > 0">
+  @if (!loading && bookings.length > 0) {
+
+  <div class="bookings-grid">
+    
     @for (booking of bookings; track booking.id) {
       <div class="booking-ticket-card" [class.cancelled-card]="booking.status === 'CANCELLED'">
         <div class="ticket-top">
@@ -89,7 +92,7 @@
       </div>
     }
   </div>
-</div>
+}
 
 <!-- MODALE D'EMBARQUEMENT / IMPRESSION -->
 @if (showPrintModal && selectedBookingForPrint) {

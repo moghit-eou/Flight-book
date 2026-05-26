@@ -60,9 +60,8 @@ export class BookingService {
   }
 
   getMyBookings(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/my-bookings`, { headers: this.getHeaders() });
+    return this.http.get<any[]>(`${this.apiUrl}`, { headers: this.getHeaders() });
   }
-
   getAllBookings(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/admin/all`, { headers: this.getHeaders() });
   }

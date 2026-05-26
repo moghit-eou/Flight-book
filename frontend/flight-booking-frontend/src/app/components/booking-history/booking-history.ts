@@ -37,12 +37,15 @@ export class BookingHistoryComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        if (err?.status === 401 || err?.status === 403) {
-          this.router.navigate(['/login']);
-        } else {
-          this.error = "Impossible de charger votre historique de réservations.";
-        }
-      }
+        const token = localStorage.getItem('token');
+        if ((err?.status === 401 || err?.status === 403) && token) {
+         localStorage.removeItem('token');
+         localStorage.removeItem('role');
+         this.router.navigate(['/login']);
+    } else {
+      this.error = "Impossible de charger votre historique de réservations.";
+    }
+  }
     });
   }
 

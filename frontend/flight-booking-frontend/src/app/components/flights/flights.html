@@ -5,11 +5,11 @@
   <div class="search-bar">
     <div class="search-field">
       <label>Départ</label>
-      <input [(ngModel)]="depIata" placeholder="Ex: CDG" maxlength="3" style="text-transform: uppercase;" />
+      <input [(ngModel)]="depIata" placeholder="Ex: CDG" maxlength="3" />
     </div>
     <div class="search-field">
       <label>Arrivée</label>
-      <input [(ngModel)]="arrIata" placeholder="Ex: CMN" maxlength="3" style="text-transform: uppercase;" />
+      <input [(ngModel)]="arrIata" placeholder="Ex: CMN" maxlength="3" />
     </div>
     <button (click)="search()" [disabled]="loading">
       {{ loading ? 'Recherche...' : 'Rechercher' }}
