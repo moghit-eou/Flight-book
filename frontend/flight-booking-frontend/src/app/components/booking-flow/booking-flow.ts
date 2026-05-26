@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BookingService } from '../../services/booking';
 import { Router } from '@angular/router';
+import { ChangeDetectorRef } from '@angular/core';
+
 
 interface Seat {
   id: string;
@@ -11,6 +13,7 @@ interface Seat {
   type: 'Premium' | 'Standard';
   occupied: boolean;
   price: number;
+  
 }
 
 @Component({
@@ -41,7 +44,9 @@ export class BookingFlowComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private bookingService: BookingService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
+
   ) {}
 
   ngOnInit() {
@@ -182,10 +187,12 @@ export class BookingFlowComponent implements OnInit {
         this.createdBooking = res;
         this.currentStep = 5;
         this.triggerConfetti();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.loading = false;
         alert("Erreur lors de la réservation : " + (err?.error?.message || "Erreur serveur"));
+        this.cdr.detectChanges();
       }
     });
   }
