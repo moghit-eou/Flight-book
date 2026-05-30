@@ -70,9 +70,14 @@ loadHistory() {
   openBoardingPass(booking: any) {
     this.selectedBookingForPrint = booking;
     this.showPrintModal = true;
+    setTimeout(() => {
+      document.querySelector('.modal-overlay')?.classList.add('active');
+    }, 0);
   }
 
+    
   closePrintModal() {
+    document.querySelector('.modal-overlay')?.classList.remove('active');
     this.showPrintModal = false;
     this.selectedBookingForPrint = null;
   }

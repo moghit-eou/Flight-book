@@ -96,7 +96,7 @@
 
 <!-- MODALE D'EMBARQUEMENT / IMPRESSION -->
 @if (showPrintModal && selectedBookingForPrint) {
-  <div class="modal-overlay" (click)="closePrintModal()">
+  <div class="modal-overlay" [id]="'modal-' + selectedBookingForPrint?.id" (click)="closePrintModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <button class="modal-close" (click)="closePrintModal()">✕</button>
 
