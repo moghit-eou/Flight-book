@@ -73,12 +73,4 @@ export class BookingService {
   cancelBooking(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
-
-  pay(bookingId: number, amount: number, method: string): Observable<any> {
-    return this.http.post(`http://localhost:8080/api/payments`, 
-      { bookingId, amount, method }, 
-      { headers: this.getHeaders() }
-    );
-  }
-
 }

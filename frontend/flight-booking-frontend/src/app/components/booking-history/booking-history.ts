@@ -18,6 +18,7 @@ export class BookingHistoryComponent implements OnInit {
   loading = false;
   error = '';
   
+  // Modale billet sélectionné pour réimpression
   selectedBookingForPrint: any = null;
   showPrintModal = false;
 

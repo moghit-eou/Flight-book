@@ -143,11 +143,6 @@ export class BookingFlowComponent implements OnInit {
     }
   }
 
-  getCardMethod(): string {
-   const number = this.paymentForm.value.cardNumber || '';
-   return number.startsWith('4') ? 'VISA' : 'MASTERCARD';
-  }
-
   confirmPayment() {
     if (this.paymentForm.invalid) {
       this.paymentForm.markAllAsTouched();
@@ -187,23 +182,12 @@ export class BookingFlowComponent implements OnInit {
 
     this.bookingService.createBooking(bookingPayload).subscribe({
       next: (res) => {
+        this.loading = false;
+        this.success = true;
         this.createdBooking = res;
-        this.bookingService.pay(res.id, this.getTotalPrice(), this.getCardMethod()).subscribe({
-          next: () => {
-            this.loading = false;
-            this.success = true;
-            this.currentStep = 5;
-            this.triggerConfetti();
-            this.cdr.detectChanges();
-          },
-          error: () => {
-            this.loading = false;
-            this.success = true;
-            this.currentStep = 5;
-            this.triggerConfetti();
-            this.cdr.detectChanges();
-          }
-        });
+        this.currentStep = 5;
+        this.triggerConfetti();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.loading = false;
@@ -211,11 +195,7 @@ export class BookingFlowComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
-
-
   }
-
-
 
   triggerConfetti() {
     // Petit effet visuel festif de confettis en CSS
