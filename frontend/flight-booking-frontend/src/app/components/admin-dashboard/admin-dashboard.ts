@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { BookingService } from '../../services/booking';
 import { Router } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
+import { ChangeDetectorRef } from '@angular/core';
+
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -19,7 +21,8 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private bookingService: BookingService, 
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService, 
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -40,10 +43,13 @@ export class AdminDashboardComponent implements OnInit {
           next: (books) => {
             this.bookings = books.sort((a, b) => b.id - a.id);
             this.loading = false;
+            this.cdr.detectChanges();  // 
           },
           error: (err) => {
             this.loading = false;
             this.toastService.show("Erreur chargement des réservations", "error");
+            this.cdr.detectChanges();  // 
+
           }
         });
       },
@@ -54,6 +60,7 @@ export class AdminDashboardComponent implements OnInit {
         } else {
           this.toastService.show("Erreur chargement des statistiques", "error");
         }
+        this.cdr.detectChanges();
       }
     });
   }
