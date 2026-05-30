@@ -89,6 +89,21 @@
             Embarquement / PDF
           </button>
         </div>
+
+        @if (booking.status === 'CONFIRMED' && !booking.reviewed) {
+          <div class="review-form">
+            <p>Notez ce vol :</p>
+            <div class="stars">
+              @for (star of [1,2,3,4,5]; track star) {
+                <span (click)="setRating(booking, star)"
+                      [class.active]="booking.tempRating >= star">★</span>
+              }
+            </div>
+            <textarea [(ngModel)]="booking.tempComment" placeholder="Votre commentaire..."></textarea>
+            <button (click)="submitReview(booking)">Envoyer</button>
+          </div>
+        }
+        
       </div>
     }
   </div>
