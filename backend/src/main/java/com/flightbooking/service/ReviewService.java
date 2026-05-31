@@ -37,8 +37,9 @@ public class ReviewService {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
 
         User user = resolveUser(authHeader);
-        Flight flight = flightRepository.findById(request.getFlightId())
-            .orElseThrow(() -> new IllegalArgumentException("Flight not found"));
+        
+        Flight flight = flightRepository.findFirstByFlightIata(request.getFlightIata())
+             .orElseThrow(() -> new IllegalArgumentException("Flight not found"));
 
         Review review = new Review();
         review.setUser(user);

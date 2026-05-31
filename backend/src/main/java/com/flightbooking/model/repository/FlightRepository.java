@@ -10,6 +10,9 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
     List<Flight> findByDepIata(String depIata);
     List<Flight> findByArrIata(String arrIata);
     Optional<Flight> findByFlightIataAndFlightDate(String flightIata, String flightDate);
+    Optional<Flight> findByFlightIata(String flightIata);
+    Optional<Flight> findFirstByFlightIata(String flightIata);
+
 
     // Méthodes pour la recherche partielle dans le cache (ex: l'utilisateur tape "C" ou "CM")
     List<Flight> findByDepIataStartingWithIgnoreCaseAndArrIataStartingWithIgnoreCase(String depIata, String arrIata);

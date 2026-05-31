@@ -9,12 +9,12 @@ export class ReviewService {
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || '';
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
-  addReview(flightId: number, rating: number, comment: string): Observable<any> {
-    return this.http.post(this.apiUrl, { flightId, rating, comment }, { headers: this.getHeaders() });
+  addReview(flightIata: string, rating: number, comment: string): Observable<any> {
+    return this.http.post(this.apiUrl, { flightIata, rating, comment }, { headers: this.getHeaders() });
   }
 
   getByFlight(flightId: number): Observable<any[]> {

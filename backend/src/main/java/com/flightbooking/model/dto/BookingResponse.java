@@ -17,6 +17,8 @@ public class BookingResponse {
     private final String baggageOption;
     private final String status;
     private final String bookingDate;
+    private final Long flightId;
+
 
     public BookingResponse(Booking b) {
         this.id = b.getId();
@@ -33,6 +35,8 @@ public class BookingResponse {
         this.baggageOption = b.getBaggageOption();
         this.status = b.getStatus();
         this.bookingDate = b.getBookingDate();
+        this.flightId = b.getFlight() != null ? b.getFlight().getId() : null;
+
     }
 
     public Long getId() { return id; }
@@ -49,4 +53,6 @@ public class BookingResponse {
     public String getBaggageOption() { return baggageOption; }
     public String getStatus() { return status; }
     public String getBookingDate() { return bookingDate; }
+    public Long getFlightId() { return flightId; }
+
 }

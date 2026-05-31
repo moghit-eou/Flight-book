@@ -94,21 +94,26 @@ loadHistory() {
   setRating(booking: any, star: number) {
      booking.tempRating = star;
   }
-  submitReview(booking: any) {
-    if (!booking.tempRating) {
-      this.toastService.show("Veuillez sélectionner une note", "error");
-      return;
-    }
-    this.reviewService.addReview(booking.flightId, booking.tempRating, booking.tempComment).subscribe({
-      next: () => {
-        booking.reviewed = true;
-        this.toastService.show("Avis envoyé, merci !", "success");
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.toastService.show("Erreur lors de l'envoi de l'avis", "error");
-      }
-    });
+submitReview(booking: any) {
+      console.log("\n\n====================\n\n");
+      console.log('Sending flightIata:', booking.flightNumber);
+      console.log('booking object:', booking);   
+      console.log('flightId:', booking.flightId);  
+      console.log("\n\n====================\n\n");
+  if (!booking.tempRating) {
+    this.toastService.show("Veuillez sélectionner une note", "error");
+    return;
   }
+  this.reviewService.addReview(booking.flightNumber, booking.tempRating, booking.tempComment).subscribe({
+    next: () => {
+      booking.reviewed = true;
+      this.toastService.show("Avis envoyé, merci !", "success");
+      this.cdr.detectChanges();
+    },
+    error: () => {
+      this.toastService.show("Erreur lors de l'envoi de l'avis", "error");
+    }
+  });
+}
 
 }
