@@ -7,6 +7,11 @@ import com.flightbooking.model.entity.User;
 import com.flightbooking.model.repository.BookingRepository;
 import com.flightbooking.model.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import com.flightbooking.model.repository.FlightRepository;
+import java.util.Optional;
+import com.flightbooking.model.entity.Flight;
+
+
 import java.util.List;
 
 @Service
@@ -14,10 +19,16 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
+    private final FlightRepository flightRepository;
 
-    public BookingService(BookingRepository bookingRepository, UserRepository userRepository) {
+
+    public BookingService(BookingRepository bookingRepository, 
+        UserRepository userRepository,
+        FlightRepository flightRepository) {
+
         this.bookingRepository = bookingRepository;
-        this.userRepository = userRepository;
+        this.flightRepository  = flightRepository;
+        this.userRepository    = userRepository;
     }
 
     private User validateToken(String token) {
@@ -47,7 +58,15 @@ public class BookingService {
         booking.setPrice(request.getPrice());
         booking.setBaggageOption(request.getBaggageOption());
         booking.setBookingDate(request.getBookingDate());
+        System.out.println("\n\n=== Looking for flight: " + request.getFlightNumber() + " ===");
+        Optional<Flight> found = flightRepository.findByFlightIata(request.getFlightNumber());
+        System.out.println("=== Found: " + found.isPresent() + " ===");
+        found.ifPresent(f -> {
+            System.out.println("=== Setting flight id: " + f.getId() + " ===");
+            booking.setFlight(f);
+        });
         bookingRepository.save(booking);
+        System.out.println("=== Saved booking flight: " + booking.getFlight() + " ===\n\n");
         return new BookingResponse(booking);
     }
 

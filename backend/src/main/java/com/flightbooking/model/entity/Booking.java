@@ -72,6 +72,11 @@ public class Booking {
     @Column(name = "booking_date")
     private String bookingDate;
 
+    @ManyToOne
+    @JoinColumn(name = "flight_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Flight flight;
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -135,4 +140,7 @@ public class Booking {
 
     public String getBookingDate() { return bookingDate; }
     public void setBookingDate(String bookingDate) { this.bookingDate = bookingDate; }
+
+    public Flight getFlight() { return flight; }
+    public void setFlight(Flight flight) { this.flight = flight; }
 }

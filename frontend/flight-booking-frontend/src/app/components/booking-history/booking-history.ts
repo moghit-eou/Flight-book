@@ -4,12 +4,15 @@ import { BookingService } from '../../services/booking';
 import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { ReviewService } from '../../services/review';
+import { FormsModule } from '@angular/forms';
+
 
 
 @Component({
   selector: 'app-booking-history',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './booking-history.html',
   styleUrl: './booking-history.css'
 })
@@ -25,7 +28,9 @@ constructor(
   private bookingService: BookingService,
   private router: Router,
   private toastService: ToastService,
-  private cdr: ChangeDetectorRef
+  private cdr: ChangeDetectorRef,
+  private reviewService: ReviewService
+
 ) {}
 
   ngOnInit() {
@@ -85,4 +90,30 @@ loadHistory() {
   printTicket() {
     window.print();
   }
+
+  setRating(booking: any, star: number) {
+     booking.tempRating = star;
+  }
+submitReview(booking: any) {
+      console.log("\n\n====================\n\n");
+      console.log('Sending flightIata:', booking.flightNumber);
+      console.log('booking object:', booking);   
+      console.log('flightId:', booking.flightId);  
+      console.log("\n\n====================\n\n");
+  if (!booking.tempRating) {
+    this.toastService.show("Veuillez sélectionner une note", "error");
+    return;
+  }
+  this.reviewService.addReview(booking.flightNumber, booking.tempRating, booking.tempComment).subscribe({
+    next: () => {
+      booking.reviewed = true;
+      this.toastService.show("Avis envoyé, merci !", "success");
+      this.cdr.detectChanges();
+    },
+    error: () => {
+      this.toastService.show("Erreur lors de l'envoi de l'avis", "error");
+    }
+  });
+}
+
 }

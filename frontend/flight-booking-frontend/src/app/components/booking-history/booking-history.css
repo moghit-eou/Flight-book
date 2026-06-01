@@ -467,3 +467,66 @@
     display: none !important;
   }
 }
+.review-form {
+  padding: 1rem;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 0.5rem;
+}
+
+.review-form p {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 0.75rem;
+}
+
+.stars span {
+  font-size: 1.5rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.stars span.active {
+  color: #f59e0b;
+}
+
+.stars span:hover {
+  color: #f59e0b;
+}
+
+.review-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  resize: none;
+  height: 70px;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  outline: none;
+}
+
+.review-form textarea:focus {
+  border-color: #3b82f6;
+}
+
+.review-form button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.review-form button:hover {
+  background: #2563eb;
+}

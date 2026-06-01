@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ToastService, ToastMessage } from './services/toast.service';
@@ -10,7 +10,7 @@ import { ToastService, ToastMessage } from './services/toast.service';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class AppComponent {
+export class AppComponent implements AfterViewChecked {
   isMobileMenuOpen = false;
   toast: ToastMessage | null = null;
   private toastTimeout: any;
@@ -22,12 +22,20 @@ export class AppComponent {
     return localStorage.getItem('role') === 'ADMIN';
   }
 
-  constructor(private router: Router, private toastService: ToastService) {
+  constructor(private router: Router, private toastService: ToastService, private cdr: ChangeDetectorRef) {
     this.toastService.toastState.subscribe(toast => {
       this.toast = toast;
       if (this.toastTimeout) clearTimeout(this.toastTimeout);
-      this.toastTimeout = setTimeout(() => this.toast = null, 4000);
+      this.toastTimeout = setTimeout(() => {
+        this.toast = null;
+        this.cdr.detectChanges();
+      }, 4000);
+      setTimeout(() => this.cdr.detectChanges(), 0);
     });
+  }
+
+  ngAfterViewChecked() {
+    this.cdr.detectChanges();
   }
 
   logout() {
