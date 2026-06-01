@@ -69,6 +69,10 @@ export class BookingService {
   getAdminStats(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/admin/stats`, { headers: this.getHeaders() });
   }
+ 
+  markAsFlewBooking(id: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/flew`, {}, { headers: this.getHeaders() });
+  }
 
   cancelBooking(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });

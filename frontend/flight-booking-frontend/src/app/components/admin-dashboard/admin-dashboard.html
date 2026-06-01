@@ -60,18 +60,30 @@
                 <td>{{ b.departureIata }} ➔ {{ b.arrivalIata }}</td>
                 <td>US${{ b.price }}</td>
                 <td>
-                  <span class="status-badge" [class.confirmed]="b.status === 'CONFIRMED'" [class.cancelled]="b.status === 'CANCELLED'">
-                    {{ b.status === 'CONFIRMED' ? 'Confirmé' : 'Annulé' }}
+                  <span class="status-badge"
+                    [class.confirmed]="b.status === 'CONFIRMED'"
+                    [class.cancelled]="b.status === 'CANCELLED'"
+                    [class.flew]="b.status === 'FLEW'">
+                    {{ b.status === 'CONFIRMED' ? 'Confirmé' : b.status === 'FLEW' ? '✈️ Effectué' : 'Annulé' }}
                   </span>
                 </td>
+
                 <td>
-                  <button 
-                    class="btn-danger-sm" 
-                    [disabled]="b.status === 'CANCELLED'"
+                  <button
+                    class="btn-danger-sm"
+                    [disabled]="b.status === 'CANCELLED' || b.status === 'FLEW'"
                     (click)="cancelReservation(b.id)">
                     Annuler
                   </button>
+                  <button
+                    class="btn-flew-sm"
+                    [disabled]="b.status === 'CANCELLED' || b.status === 'FLEW'"
+                    (click)="markAsFlewBooking(b.id)">
+                    ✈️ Completed
+                  </button>
                 </td>
+
+
               </tr>
             }
           </tbody>
