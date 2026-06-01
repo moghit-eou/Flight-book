@@ -45,7 +45,6 @@ public class AuthService {
         user.setPhoneNumber(request.getPhoneNumber());
         
         user.setEmail(request.getEmail());
-        // CORRECTION ICI : Utilise encoder.encode()
         user.setPassword(encoder.encode(request.getPassword()));
         
         user.setRole("USER"); // Always USER from register endpoint
