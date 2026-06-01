@@ -5,8 +5,10 @@ import com.flightbooking.model.entity.User;
 import com.flightbooking.model.repository.BookingRepository;
 import com.flightbooking.model.repository.UserRepository;
 import com.flightbooking.service.AuthService;
+import com.flightbooking.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.flightbooking.model.dto.ReviewResponse;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,11 +22,13 @@ public class BookingController {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final ReviewService reviewService;
 
-    public BookingController(BookingRepository bookingRepository, UserRepository userRepository, AuthService authService) {
+    public BookingController(BookingRepository bookingRepository, UserRepository userRepository, AuthService authService, ReviewService reviewService) {
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
         this.authService = authService;
+        this.reviewService = reviewService;
     }
 
     private User resolveUser(String authHeader) {
