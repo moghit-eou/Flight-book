@@ -28,14 +28,17 @@
   <div class="bookings-grid">
     
     @for (booking of bookings; track booking.id) {
-      <div class="booking-ticket-card" [class.cancelled-card]="booking.status === 'CANCELLED'">
+      <div class="booking-ticket-card" [class.cancelled-card]="booking.status === 'CANCELLED'" [class.flew-card]="booking.status === 'FLEW'">
         <div class="ticket-top">
           <div class="airline-info">
             <span class="company-name">{{ booking.airlineName }}</span>
             <span class="flight-tag">Vol {{ booking.flightNumber }}</span>
           </div>
-          <div class="ticket-status-badge" [class.status-confirmed]="booking.status === 'CONFIRMED'" [class.status-cancelled]="booking.status === 'CANCELLED'">
-            {{ booking.status === 'CONFIRMED' ? 'Confirmé' : 'Annulé' }}
+          <div class="ticket-status-badge"
+            [class.status-confirmed]="booking.status === 'CONFIRMED'"
+            [class.status-cancelled]="booking.status === 'CANCELLED'"
+            [class.status-flew]="booking.status === 'FLEW'">
+            {{ booking.status === 'CONFIRMED' ? 'Confirmé' : booking.status === 'FLEW' ? '✈️ Effectué' : 'Annulé' }}
           </div>
         </div>
 
@@ -77,7 +80,7 @@
         <div class="ticket-actions-footer">
           <button 
             class="btn-danger" 
-            [disabled]="booking.status === 'CANCELLED'"
+            [disabled]="booking.status === 'CANCELLED' || booking.status === 'FLEW'"
             (click)="cancelReservation(booking.id)">
             Annuler
           </button>
