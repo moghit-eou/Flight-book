@@ -20,8 +20,14 @@ export class RegisterComponent {
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute, private toastService: ToastService) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      city: ['', Validators.required],
+      country: ['', Validators.required],
+      phoneNumber: ['', Validators.required]
+    }); 
   }
 
   get passwordStrength(): number {
@@ -43,11 +49,19 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.valid) {
       this.loading = true;
-      const { email, password } = this.registerForm.value;
-      this.authService.register(email, password).subscribe({
-        next: () => {
+      const { email, password, confirmPassword, firstName, lastName, city, country, phoneNumber } = this.registerForm.value;
+      
+      if (password !== confirmPassword) {
+        this.toastService.show('Les mots de passe ne correspondent pas', 'error');
+        this.loading = false;
+        return;
+     }
+
+      this.authService.register(email, password, firstName, lastName, city, country, phoneNumber).subscribe({
+        next: (res) => {
           this.loading = false;
           this.toastService.show('Compte créé avec succès ! Bienvenue', 'success');
+          localStorage.setItem('firstName', res.firstName);
           setTimeout(() => {
             const returnUrl = this.route.snapshot.queryParams['returnUrl'];
             if (returnUrl) {
@@ -70,5 +84,12 @@ export class RegisterComponent {
         }
       });
     }
+  }
+
+  debugForm() {
+    console.log(this.registerForm.value);
+    Object.keys(this.registerForm.controls).forEach(key => {
+      console.log(key, this.registerForm.get(key)?.errors);
+    });
   }
 }

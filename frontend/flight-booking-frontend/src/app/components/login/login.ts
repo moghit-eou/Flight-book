@@ -31,6 +31,7 @@ export class LoginComponent {
         next: (res) => {
           localStorage.setItem('token', res.token);
           localStorage.setItem('role', res.role || 'USER');
+          localStorage.setItem('firstName', res.firstName);
           this.toastService.show('Connexion réussie ! Bienvenue', 'success');
           setTimeout(() => {
             const returnUrl = this.route.snapshot.queryParams['returnUrl'];
