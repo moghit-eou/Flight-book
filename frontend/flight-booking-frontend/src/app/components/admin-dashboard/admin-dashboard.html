@@ -5,90 +5,108 @@
   </div>
 
   @if (loading) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>Chargement des données...</p>
-    </div>
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des données...</p>
+  </div>
   }
 
   @if (!loading && stats) {
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-title">Réservations Totales</div>
-        <div class="stat-value">{{ stats.totalBookings }}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">Revenu Total</div>
-        <div class="stat-value val-revenue">US${{ stats.totalRevenue }}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">Prix Moyen</div>
-        <div class="stat-value">US${{ stats.averagePrice }}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">Comptes Utilisateurs</div>
-        <div class="stat-value">{{ stats.totalUsers }}</div>
-      </div>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-title">Réservations Totales</div>
+      <div class="stat-value">{{ stats.totalBookings }}</div>
     </div>
-
-    <div class="bookings-section">
-      <h2>Toutes les réservations</h2>
-      <div class="table-container">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Date</th>
-              <th>Passager</th>
-              <th>Vol</th>
-              <th>Trajet</th>
-              <th>Montant</th>
-              <th>Statut</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (b of bookings; track b.id) {
-              <tr>
-                <td>#{{ b.id }}</td>
-                <td>{{ b.bookingDate | date:'dd/MM/yyyy HH:mm' }}</td>
-                <td>
-                  <strong>{{ b.passengerName }}</strong><br>
-                  <small>{{ b.passengerEmail }}</small>
-                </td>
-                <td>{{ b.airlineName }} ({{ b.flightNumber }})</td>
-                <td>{{ b.departureIata }} ➔ {{ b.arrivalIata }}</td>
-                <td>US${{ b.price }}</td>
-                <td>
-                  <span class="status-badge"
-                    [class.confirmed]="b.status === 'CONFIRMED'"
-                    [class.cancelled]="b.status === 'CANCELLED'"
-                    [class.flew]="b.status === 'FLEW'">
-                    {{ b.status === 'CONFIRMED' ? 'Confirmé' : b.status === 'FLEW' ? '✈️ Effectué' : 'Annulé' }}
-                  </span>
-                </td>
-
-                <td>
-                  <button
-                    class="btn-danger-sm"
-                    [disabled]="b.status === 'CANCELLED' || b.status === 'FLEW'"
-                    (click)="cancelReservation(b.id)">
-                    Annuler
-                  </button>
-                  <button
-                    class="btn-flew-sm"
-                    [disabled]="b.status === 'CANCELLED' || b.status === 'FLEW'"
-                    (click)="markAsFlewBooking(b.id)">
-                    ✈️ Completed
-                  </button>
-                </td>
-
-
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+    <div class="stat-card">
+      <div class="stat-title">Revenu Total</div>
+      <div class="stat-value val-revenue">US${{ stats.totalRevenue }}</div>
     </div>
+    <div class="stat-card">
+      <div class="stat-title">Prix Moyen</div>
+      <div class="stat-value">US${{ stats.averagePrice }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">Comptes Utilisateurs</div>
+      <div class="stat-value">{{ stats.totalUsers }}</div>
+    </div>
+  </div>
+
+  <div class="bookings-section">
+    <h2>Toutes les réservations</h2>
+    <div class="table-container">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Passager</th>
+            <th>Vol</th>
+            <th>Trajet</th>
+            <th>Montant</th>
+            <th>Statut</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (b of bookings; track b.id) {
+          <tr>
+            <td>#{{ b.id }}</td>
+            <td>{{ b.bookingDate | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <strong>{{ b.passengerName }}</strong><br>
+              <small>{{ b.passengerEmail }}</small>
+            </td>
+            <td>{{ b.airlineName }} ({{ b.flightNumber }})</td>
+            <td>{{ b.departureIata }} ➔ {{ b.arrivalIata }}</td>
+            <td>US${{ b.price }}</td>
+            <td>
+              <span class="status-badge" [class.confirmed]="b.status === 'CONFIRMED'"
+                [class.cancelled]="b.status === 'CANCELLED'" [class.flew]="b.status === 'FLEW'">
+                {{ b.status === 'CONFIRMED' ? 'Confirmé' : b.status === 'FLEW' ? '✈️ Effectué' : 'Annulé' }}
+              </span>
+            </td>
+
+            <td>
+              <button class="btn-danger-sm" [disabled]="b.status === 'CANCELLED' || b.status === 'FLEW'"
+                (click)="cancelReservation(b.id)">
+                Annuler
+              </button>
+              <button class="btn-flew-sm" [disabled]="b.status === 'CANCELLED' || b.status === 'FLEW'"
+                (click)="markAsFlewBooking(b.id)">
+                ✈️ Completed
+              </button>
+            </td>
+
+
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
   }
+
+  <div class="reviews-section">
+    <h2>Tous les avis</h2>
+    @if (reviews.length === 0) {
+    <p class="no-reviews">Aucun avis pour l'instant.</p>
+    }
+    <div class="reviews-grid">
+      @for (r of reviews; track r.id) {
+      <div class="review-card">
+        <div class="review-header">
+          <span class="review-user">{{ r.userEmail }}</span>
+          <span class="review-flight">Vol {{ r.flightIata }}</span>
+          <span class="review-date">{{ r.createdAt | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="review-stars">
+          @for (s of [1,2,3,4,5]; track s) {
+          <span [class.filled]="s <= r.rating">★</span>
+          }
+        </div>
+        <p class="review-comment">{{ r.comment }}</p>
+      </div>
+      }
+    </div>
+  </div>
 </div>

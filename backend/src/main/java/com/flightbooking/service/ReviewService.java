@@ -17,6 +17,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final FlightRepository flightRepository;
     private final UserRepository userRepository;
+    
 
     public ReviewService(ReviewRepository reviewRepository,
                          FlightRepository flightRepository,
@@ -61,6 +62,16 @@ public class ReviewService {
     public List<ReviewResponse> getMyReviews(String authHeader) {
         User user = resolveUser(authHeader);
         return reviewRepository.findByUser(user).stream()
+            .map(ReviewResponse::new)
+            .toList();
+    }
+    public List<ReviewResponse> getAllReviews(String authHeader) {
+        String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+        User user = userRepository.findByToken(token)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+        if (!"ADMIN".equals(user.getRole()))
+            throw new IllegalArgumentException("Accès refusé. Rôle administrateur requis.");
+        return reviewRepository.findAll().stream()
             .map(ReviewResponse::new)
             .toList();
     }

@@ -24,4 +24,9 @@ export class ReviewService {
   getMyReviews(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/my-reviews`, { headers: this.getHeaders() });
   }
+  
+  getAllReviews(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/all`, { headers: this.getHeaders() });
+  }
+
 }

@@ -4,6 +4,8 @@ import { BookingService } from '../../services/booking';
 import { Router } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { ReviewService } from '../../services/review';
+
 
 
 @Component({
@@ -12,15 +14,19 @@ import { ChangeDetectorRef } from '@angular/core';
   imports: [CommonModule],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css'
+  
 })
+
 export class AdminDashboardComponent implements OnInit {
   stats: any = null;
   bookings: any[] = [];
   loading = false;
-  
+  reviews: any[] = [];
+
   constructor(
     private bookingService: BookingService, 
     private router: Router,
+    private reviewService: ReviewService,
     private toastService: ToastService, 
     private cdr: ChangeDetectorRef
   ) {}
@@ -32,6 +38,12 @@ export class AdminDashboardComponent implements OnInit {
       return;
     }
     this.loadData();
+    
+    this.reviewService.getAllReviews().subscribe({
+      next: (data) => this.reviews = data,
+      error: () => {}
+    });
+
   }
 
   loadData() {
@@ -89,5 +101,5 @@ export class AdminDashboardComponent implements OnInit {
     },
     error: () => this.toastService.show('Erreur lors de la mise à jour', 'error')
   });
-}
+  }
 }
