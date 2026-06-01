@@ -55,7 +55,7 @@ export class RegisterComponent {
         this.toastService.show('Les mots de passe ne correspondent pas', 'error');
         this.loading = false;
         return;
-      }
+     }
 
       this.authService.register(email, password, firstName, lastName, city, country, phoneNumber).subscribe({
         next: () => {
@@ -83,5 +83,12 @@ export class RegisterComponent {
         }
       });
     }
+  }
+
+  debugForm() {
+    console.log(this.registerForm.value);
+    Object.keys(this.registerForm.controls).forEach(key => {
+      console.log(key, this.registerForm.get(key)?.errors);
+    });
   }
 }
