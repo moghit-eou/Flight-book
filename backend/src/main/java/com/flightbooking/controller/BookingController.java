@@ -117,7 +117,11 @@ public class BookingController {
         if (!booking.getUser().getId().equals(user.getId()) && !"ADMIN".equals(user.getRole())) {
             throw new IllegalArgumentException("Accès non autorisé pour annuler cette réservation.");
         }
-
+        
+        if ("FLEW".equals(booking.getStatus())) {
+           throw new IllegalArgumentException("Ce vol est déjà effectué, il ne peut plus être annulé.");
+        }
+        
         booking.setStatus("CANCELLED");
         bookingRepository.save(booking);
 
