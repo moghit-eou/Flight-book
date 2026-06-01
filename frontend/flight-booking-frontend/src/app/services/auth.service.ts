@@ -10,8 +10,8 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  register(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, { email, password });
+  register(email: string, password: string, firstName: string, lastName: string, city: string, country: string, phoneNumber: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, { email, password, firstName, lastName, city, country, phoneNumber });
   }
 
   login(email: string, password: string): Observable<any> {

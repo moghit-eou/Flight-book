@@ -38,15 +38,20 @@ public class AuthService {
             throw new IllegalArgumentException("Email already in use");
 
         User user = new User();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setCity(request.getCity());
+        user.setCountry(request.getCountry());
+        user.setPhoneNumber(request.getPhoneNumber());
+        
         user.setEmail(request.getEmail());
         // CORRECTION ICI : Utilise encoder.encode()
         user.setPassword(encoder.encode(request.getPassword()));
         
         user.setRole("USER"); // Always USER from register endpoint
-        
         user.setToken(UUID.randomUUID().toString());
         userRepository.save(user);
-        return new AuthResponse(user.getToken(), user.getRole());
+        return new AuthResponse(user.getToken(), user.getRole(), user.getFirstName());
     }
 
     public AuthResponse login(AuthRequest request) {
@@ -58,7 +63,7 @@ public class AuthService {
 
         user.setToken(UUID.randomUUID().toString());
         userRepository.save(user);
-        return new AuthResponse(user.getToken(), user.getRole());
+        return new AuthResponse(user.getToken(), user.getRole(), user.getFirstName());
     }
 
     public User validateToken(String token) {
