@@ -79,12 +79,6 @@ public class BookingController {
         List<Booking> allBookings = bookingRepository.findAll();
         return ResponseEntity.ok(allBookings);
     }
-    @GetMapping("/admin/all")
-    public List<ReviewResponse> getAllReviews(
-        @RequestHeader("Authorization") String authHeader
-    ) {
-        return reviewService.getAllReviews(authHeader);
-    }
 
     @GetMapping("/admin/stats")
     public ResponseEntity<Map<String, Object>> getAdminStats(

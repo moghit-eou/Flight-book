@@ -66,11 +66,13 @@ public class ReviewService {
             .toList();
     }
     public List<ReviewResponse> getAllReviews(String authHeader) {
-        String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
-        User user = userRepository.findByToken(token)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+        
+        User user = resolveUser(authHeader); 
+
         if (!"ADMIN".equals(user.getRole()))
             throw new IllegalArgumentException("Accès refusé. Rôle administrateur requis.");
+
+
         return reviewRepository.findAll().stream()
             .map(ReviewResponse::new)
             .toList();

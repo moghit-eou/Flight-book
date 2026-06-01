@@ -35,4 +35,12 @@ public class ReviewController {
     ) {
         return reviewService.getMyReviews(authHeader);
     }
+
+    @GetMapping("/admin/all")
+    public List<ReviewResponse> getAllReviews(
+        @RequestHeader("Authorization") String authHeader
+    ) {
+        return reviewService.getAllReviews(authHeader);
+    }
+    
 }

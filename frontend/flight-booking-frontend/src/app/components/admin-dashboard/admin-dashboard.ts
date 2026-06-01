@@ -26,9 +26,9 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private bookingService: BookingService, 
     private router: Router,
-    private reviewService: ReviewService,
     private toastService: ToastService, 
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private reviewService: ReviewService
   ) {}
 
   ngOnInit() {
@@ -38,9 +38,12 @@ export class AdminDashboardComponent implements OnInit {
       return;
     }
     this.loadData();
-    
+
     this.reviewService.getAllReviews().subscribe({
-      next: (data) => this.reviews = data,
+      next: (data) => {
+        this.reviews = data;
+        this.cdr.detectChanges();  
+      },
       error: () => {}
     });
 
