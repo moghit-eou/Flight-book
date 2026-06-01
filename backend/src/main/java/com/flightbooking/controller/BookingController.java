@@ -125,4 +125,24 @@ public class BookingController {
         response.put("message", "La réservation a été annulée avec succès");
         return ResponseEntity.ok(response);
     }
+
+    @PatchMapping("/{id}/flew")
+    public ResponseEntity<Map<String, String>> markAsFlewBooking(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Long id
+    ) {
+        User user = resolveUser(authHeader);
+        if (!"ADMIN".equals(user.getRole())) {
+            throw new IllegalArgumentException("Accès refusé. Rôle administrateur requis.");
+        }
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Réservation introuvable"));
+
+        booking.setStatus("FLEW");
+        bookingRepository.save(booking);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Le vol a été marqué comme effectué");
+        return ResponseEntity.ok(response);
+    }
 }
