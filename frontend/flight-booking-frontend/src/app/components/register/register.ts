@@ -58,9 +58,10 @@ export class RegisterComponent {
      }
 
       this.authService.register(email, password, firstName, lastName, city, country, phoneNumber).subscribe({
-        next: () => {
+        next: (res) => {
           this.loading = false;
           this.toastService.show('Compte créé avec succès ! Bienvenue', 'success');
+          localStorage.setItem('firstName', res.firstName);
           setTimeout(() => {
             const returnUrl = this.route.snapshot.queryParams['returnUrl'];
             if (returnUrl) {

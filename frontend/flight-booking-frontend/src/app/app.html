@@ -17,10 +17,17 @@
           📅 Mes Réservations
         </a>
       }
-      
-      <button class="nav-logout" (click)="logout()">
-        🚪 Déconnexion
-      </button>
+            
+      <div class="nav-profile" (click)="toggleDropdown()" style="position: relative; cursor: pointer;">
+        <span class="nav-username">👤 {{ firstName }} ▾</span>
+        @if (dropdownOpen) {
+          <div class="nav-dropdown">
+            <span class="dropdown-name">{{ firstName }}</span>
+            <hr>
+            <a (click)="logout()">🚪 Déconnexion</a>
+          </div>
+        }
+      </div>
     } @else {
       <a routerLink="/login" routerLinkActive="active">Connexion</a>
       <a routerLink="/register" class="nav-cta">

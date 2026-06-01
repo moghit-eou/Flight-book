@@ -12,6 +12,7 @@ import { ToastService, ToastMessage } from './services/toast.service';
 })
 export class AppComponent implements AfterViewChecked {
   isMobileMenuOpen = false;
+  dropdownOpen = false;
   toast: ToastMessage | null = null;
   private toastTimeout: any;
 
@@ -41,6 +42,16 @@ export class AppComponent implements AfterViewChecked {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('firstName');
     this.router.navigate(['/login']);
+  }
+
+
+  get firstName(): string {
+    return localStorage.getItem('firstName') || 'Profil';
+  }
+
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
   }
 }
