@@ -78,4 +78,16 @@ export class AdminDashboardComponent implements OnInit {
       });
     }
   }
+
+  markAsFlewBooking(id: number) {
+  if (!confirm('Marquer ce vol comme effectué ? Les passagers ne pourront plus annuler.')) return;
+  this.bookingService.markAsFlewBooking(id).subscribe({
+    next: () => {
+      const b = this.bookings.find((x: any) => x.id === id);
+      if (b) b.status = 'FLEW';
+      this.toastService.show('Vol marqué comme effectué ✈️', 'success');
+    },
+    error: () => this.toastService.show('Erreur lors de la mise à jour', 'error')
+  });
+}
 }
