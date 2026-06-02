@@ -3,185 +3,216 @@
   <p>Trouvez vos vols en temps réel</p>
 
   <div class="search-bar">
-    <div class="search-field">
-      <label>Départ</label>
-      <input [(ngModel)]="depIata" placeholder="Ex: CDG" maxlength="3" />
+    <div class="search-pill">
+
+      <div class="pill-field">
+        <span class="pill-icon">✈️</span>
+        <div class="pill-input-group">
+          <label>De</label>
+          <input [(ngModel)]="depIata" placeholder="Ex: CDG" maxlength="3" (keyup.enter)="search()" />
+        </div>
+      </div>
+
+      <div class="pill-divider"></div>
+
+      <div class="pill-field">
+        <span class="pill-icon">📍</span>
+        <div class="pill-input-group">
+          <label>Vers</label>
+          <input [(ngModel)]="arrIata" placeholder="Ex: CMN" maxlength="3" (keyup.enter)="search()" />
+        </div>
+      </div>
+
+      <div class="pill-divider"></div>
+
+      <div class="pill-field">
+        <span class="pill-icon">📅</span>
+        <div class="pill-input-group">
+          <label>Départ</label>
+          <input type="date" [(ngModel)]="depDate" (change)="updatePagination()" />
+        </div>
+      </div>
+
+      <button class="pill-btn" (click)="search()" [disabled]="loading">
+        <span>🔍</span>
+        {{ loading ? '...' : 'Explorer' }}
+      </button>
+
     </div>
-    <div class="search-field">
-      <label>Arrivée</label>
-      <input [(ngModel)]="arrIata" placeholder="Ex: CMN" maxlength="3" />
-    </div>
-    <button (click)="search()" [disabled]="loading">
-      {{ loading ? 'Recherche...' : 'Rechercher' }}
-    </button>
   </div>
+
 </div>
 
 
 
 <div class="container">
   @if (loading) {
-    <div class="loading">
-      <div class="spinner"></div>
-      <p>Chargement des vols...</p>
-    </div>
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement des vols...</p>
+  </div>
   }
 
   @if (!loading && flights.length === 0 && searched) {
-    <div class="empty">Aucun vol trouvé. Essayez d'autres codes IATA.</div>
+  <div class="empty">Aucun vol trouvé. Essayez d'autres codes IATA.</div>
   }
 
   <div class="flights-grid">
     @for (flight of paginatedFlights; track $index) {
-      <div class="flight-card" [ngClass]="getStatusClass(flight.flight_status)" (click)="openFlightDetails(flight)">
-        <div class="card-header">
-          <span class="airline">{{ flight.airline?.name }}</span>
-          <span class="flight-num">{{ flight.flight?.iata || flight.flight?.number }}</span>
-        </div>
-        <div class="card-body">
-          <div class="route">
-            <div class="airport">
-              <span class="code">{{ flight.departure?.iata }}</span>
-              <span class="name">{{ flight.departure?.airport }}</span>
-              <span class="time">{{ flight.departure?.scheduled | date:'HH:mm' }}</span>
-            </div>
-            <div class="arrow">✈</div>
-            <div class="airport">
-              <span class="code">{{ flight.arrival?.iata }}</span>
-              <span class="name">{{ flight.arrival?.airport }}</span>
-              <span class="time">{{ flight.arrival?.scheduled | date:'HH:mm' }}</span>
-            </div>
+    <div class="flight-card" [ngClass]="getStatusClass(flight.flight_status)" (click)="openFlightDetails(flight)">
+      <div class="card-header">
+        <span class="airline">{{ flight.airline?.name }}</span>
+        <span class="flight-num">{{ flight.flight?.iata || flight.flight?.number }}</span>
+      </div>
+      <div class="card-body">
+        <div class="route">
+          <div class="airport">
+            <span class="code">{{ flight.departure?.iata }}</span>
+            <span class="name">{{ flight.departure?.airport }}</span>
+            <span class="time">{{ flight.departure?.scheduled | date:'HH:mm' }}</span>
           </div>
-        </div>
-        <div class="card-footer">
-          <span class="date">📅 {{ flight.flight_date }}</span>
-          <div class="footer-right">
-            <span class="price-badge">US${{ getFlightPrice(flight.flight?.iata || flight.flight?.number) }}</span>
-            <button class="btn-select-flight-card" (click)="openFlightDetails(flight); $event.stopPropagation()">
-              Détails
-            </button>
+          <div class="arrow">✈</div>
+          <div class="airport">
+            <span class="code">{{ flight.arrival?.iata }}</span>
+            <span class="name">{{ flight.arrival?.airport }}</span>
+            <span class="time">{{ flight.arrival?.scheduled | date:'HH:mm' }}</span>
           </div>
         </div>
       </div>
+      <div class="card-footer">
+        <span class="date">📅 {{ flight.flight_date }}</span>
+        <div class="footer-right">
+          <span class="price-badge">US${{ getFlightPrice(flight.flight?.iata || flight.flight?.number) }}</span>
+          <button class="btn-select-flight-card" (click)="openFlightDetails(flight); $event.stopPropagation()">
+            Détails
+          </button>
+        </div>
+      </div>
+    </div>
     }
   </div>
 
   <!-- Pagination Controls -->
   @if (flights.length > 0) {
-    <div class="pagination-controls">
-      <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">Précédent</button>
-      <span class="page-info">Page {{ currentPage }} sur {{ totalPages }}</span>
-      <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant</button>
-    </div>
+  <div class="pagination-controls">
+    <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">Précédent</button>
+    <span class="page-info">Page {{ currentPage }} sur {{ totalPages }}</span>
+    <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant</button>
+  </div>
   }
 </div>
 
 <!-- Modale de Détails Premium -->
 @if (showDetailsModal && selectedFlight) {
-  <div class="modal-overlay" (click)="closeFlightDetails()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <button class="modal-close" (click)="closeFlightDetails()">✕</button>
+<div class="modal-overlay" (click)="closeFlightDetails()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeFlightDetails()">✕</button>
 
-      <div class="modal-header">
-        <h2>Détails du vol</h2>
-        <div class="flight-badge">{{ selectedFlight.airline?.name }} - {{ selectedFlight.flight?.iata || selectedFlight.flight?.number }}</div>
-      </div>
-      <p class="modal-route-name">{{ selectedFlight.departure?.airport }} vers {{ selectedFlight.arrival?.airport }}</p>
-      <div class="modal-flight-meta">
-        <span class="badge-depart">Date: {{ selectedFlight.flight_date }}</span>
-        <span>Vol: <strong>{{ selectedFlight.flight?.iata || selectedFlight.flight?.number }}</strong></span>
-        <span>Compagnie: <strong>{{ selectedFlight.airline?.name }}</strong></span>
-      </div>
+    <div class="modal-header">
+      <h2>Détails du vol</h2>
+      <div class="flight-badge">{{ selectedFlight.airline?.name }} - {{ selectedFlight.flight?.iata ||
+        selectedFlight.flight?.number }}</div>
+    </div>
+    <p class="modal-route-name">{{ selectedFlight.departure?.airport }} vers {{ selectedFlight.arrival?.airport }}</p>
+    <div class="modal-flight-meta">
+      <span class="badge-depart">Date: {{ selectedFlight.flight_date }}</span>
+      <span>Vol: <strong>{{ selectedFlight.flight?.iata || selectedFlight.flight?.number }}</strong></span>
+      <span>Compagnie: <strong>{{ selectedFlight.airline?.name }}</strong></span>
+    </div>
 
-      <!-- Détail trajet et connexions -->
-      <div class="route-timeline">
-        <div class="timeline-item">
-          <div class="time">{{ selectedFlight.departure?.scheduled | date:'HH:mm' }}</div>
-          <div class="bullet"></div>
-          <div class="details">
-            <div class="airport-name">{{ selectedFlight.departure?.airport }} ({{ selectedFlight.departure?.iata }})</div>
-            @if (selectedFlight.departure?.terminal) {
-              <div class="terminal">Terminal {{ selectedFlight.departure?.terminal }}</div>
-            }
-          </div>
-        </div>
-
-        <!-- Escale technique stylisée -->
-        <div class="layover-divider">
-          <div class="line"></div>
-          <div class="layover-info">
-            <span>⏱️ Escale technique • 1h 45m</span>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="time">{{ selectedFlight.arrival?.scheduled | date:'HH:mm' }}</div>
-          <div class="bullet bullet-end"></div>
-          <div class="details">
-            <div class="airport-name">{{ selectedFlight.arrival?.airport }} ({{ selectedFlight.arrival?.iata }})</div>
-            @if (selectedFlight.arrival?.terminal) {
-              <div class="terminal">Terminal {{ selectedFlight.arrival?.terminal }}</div>
-            }
-          </div>
+    <!-- Détail trajet et connexions -->
+    <div class="route-timeline">
+      <div class="timeline-item">
+        <div class="time">{{ selectedFlight.departure?.scheduled | date:'HH:mm' }}</div>
+        <div class="bullet"></div>
+        <div class="details">
+          <div class="airport-name">{{ selectedFlight.departure?.airport }} ({{ selectedFlight.departure?.iata }})</div>
+          @if (selectedFlight.departure?.terminal) {
+          <div class="terminal">Terminal {{ selectedFlight.departure?.terminal }}</div>
+          }
         </div>
       </div>
 
-      <!-- Options de Classe (Economy Basic, Standard, Plus) -->
-      <div class="class-options">
-        <!-- Basic -->
-        <div class="class-card" [class.selected]="selectedClassType === 'Basic'" (click)="selectClassType('Basic')">
-          <div class="radio-indicator">
-            <span class="radio-bullet" [class.active]="selectedClassType === 'Basic'"></span>
-          </div>
-          <h3>Economy Basic</h3>
-          <div class="price">US${{ getFlightPrice(selectedFlight.flight?.iata || selectedFlight.flight?.number) }}</div>
-          <ul class="features">
-            <li class="included">✔ Sac personnel</li>
-            <li class="excluded">✘ Bagage cabine</li>
-            <li class="excluded">✘ Bagage en soute</li>
-          </ul>
-        </div>
-
-        <!-- Standard -->
-        <div class="class-card" [class.selected]="selectedClassType === 'Standard'" (click)="selectClassType('Standard')">
-          <div class="radio-indicator">
-            <span class="radio-bullet" [class.active]="selectedClassType === 'Standard'"></span>
-          </div>
-          <h3>Economy Standard</h3>
-          <div class="price">US${{ getClassPrice(getFlightPrice(selectedFlight.flight?.iata || selectedFlight.flight?.number), 'Standard') }}</div>
-          <ul class="features">
-            <li class="included">✔ Sac personnel</li>
-            <li class="included">✔ Bagage cabine (10kg)</li>
-            <li class="excluded">✘ Bagage en soute</li>
-          </ul>
-        </div>
-
-        <!-- Plus -->
-        <div class="class-card highlight" [class.selected]="selectedClassType === 'Plus'" (click)="selectClassType('Plus')">
-          <div class="best-value">Lowest price with checked baggage</div>
-          <div class="radio-indicator">
-            <span class="radio-bullet" [class.active]="selectedClassType === 'Plus'"></span>
-          </div>
-          <h3>Economy Plus</h3>
-          <div class="price">US${{ getClassPrice(getFlightPrice(selectedFlight.flight?.iata || selectedFlight.flight?.number), 'Plus') }}</div>
-          <ul class="features">
-            <li class="included">✔ Sac personnel</li>
-            <li class="included">✔ Bagage cabine (10kg)</li>
-            <li class="included">✔ Bagage en soute (23kg)</li>
-          </ul>
+      <!-- Escale technique stylisée -->
+      <div class="layover-divider">
+        <div class="line"></div>
+        <div class="layover-info">
+          <span>⏱️ Escale technique • 1h 45m</span>
         </div>
       </div>
 
-      <!-- Footer Modal -->
-      <div class="modal-footer">
-        <div class="total-price-summary">
-          <span class="label">Prix total :</span>
-          <span class="value">US${{ getClassPrice(getFlightPrice(selectedFlight.flight?.iata || selectedFlight.flight?.number), selectedClassType) }}</span>
+      <div class="timeline-item">
+        <div class="time">{{ selectedFlight.arrival?.scheduled | date:'HH:mm' }}</div>
+        <div class="bullet bullet-end"></div>
+        <div class="details">
+          <div class="airport-name">{{ selectedFlight.arrival?.airport }} ({{ selectedFlight.arrival?.iata }})</div>
+          @if (selectedFlight.arrival?.terminal) {
+          <div class="terminal">Terminal {{ selectedFlight.arrival?.terminal }}</div>
+          }
         </div>
-        <button class="btn-continue" (click)="continueBooking()">
-          Continue
-        </button>
       </div>
     </div>
+
+    <!-- Options de Classe (Economy Basic, Standard, Plus) -->
+    <div class="class-options">
+      <!-- Basic -->
+      <div class="class-card" [class.selected]="selectedClassType === 'Basic'" (click)="selectClassType('Basic')">
+        <div class="radio-indicator">
+          <span class="radio-bullet" [class.active]="selectedClassType === 'Basic'"></span>
+        </div>
+        <h3>Economy Basic</h3>
+        <div class="price">US${{ getFlightPrice(selectedFlight.flight?.iata || selectedFlight.flight?.number) }}</div>
+        <ul class="features">
+          <li class="included">✔ Sac personnel</li>
+          <li class="excluded">✘ Bagage cabine</li>
+          <li class="excluded">✘ Bagage en soute</li>
+        </ul>
+      </div>
+
+      <!-- Standard -->
+      <div class="class-card" [class.selected]="selectedClassType === 'Standard'" (click)="selectClassType('Standard')">
+        <div class="radio-indicator">
+          <span class="radio-bullet" [class.active]="selectedClassType === 'Standard'"></span>
+        </div>
+        <h3>Economy Standard</h3>
+        <div class="price">US${{ getClassPrice(getFlightPrice(selectedFlight.flight?.iata ||
+          selectedFlight.flight?.number), 'Standard') }}</div>
+        <ul class="features">
+          <li class="included">✔ Sac personnel</li>
+          <li class="included">✔ Bagage cabine (10kg)</li>
+          <li class="excluded">✘ Bagage en soute</li>
+        </ul>
+      </div>
+
+      <!-- Plus -->
+      <div class="class-card highlight" [class.selected]="selectedClassType === 'Plus'"
+        (click)="selectClassType('Plus')">
+        <div class="best-value">Lowest price with checked baggage</div>
+        <div class="radio-indicator">
+          <span class="radio-bullet" [class.active]="selectedClassType === 'Plus'"></span>
+        </div>
+        <h3>Economy Plus</h3>
+        <div class="price">US${{ getClassPrice(getFlightPrice(selectedFlight.flight?.iata ||
+          selectedFlight.flight?.number), 'Plus') }}</div>
+        <ul class="features">
+          <li class="included">✔ Sac personnel</li>
+          <li class="included">✔ Bagage cabine (10kg)</li>
+          <li class="included">✔ Bagage en soute (23kg)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer Modal -->
+    <div class="modal-footer">
+      <div class="total-price-summary">
+        <span class="label">Prix total :</span>
+        <span class="value">US${{ getClassPrice(getFlightPrice(selectedFlight.flight?.iata ||
+          selectedFlight.flight?.number), selectedClassType) }}</span>
+      </div>
+      <button class="btn-continue" (click)="continueBooking()">
+        Continue
+      </button>
+    </div>
   </div>
+</div>
 }

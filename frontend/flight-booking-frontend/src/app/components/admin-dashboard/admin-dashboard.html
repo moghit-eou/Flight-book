@@ -1,7 +1,10 @@
 <div class="admin-container">
   <div class="admin-header">
-    <h1>Administration</h1>
-    <p>Tableau de bord de gestion globale des réservations de SkyBook</p>
+      <h1>Administration</h1>
+      <p>Tableau de bord de gestion globale des réservations de SkyBook</p>
+      <button class="btn-refresh-cache" (click)="refreshFlightCache()">
+        🔄 Refresh Flight Cache
+      </button>
   </div>
 
   @if (loading) {

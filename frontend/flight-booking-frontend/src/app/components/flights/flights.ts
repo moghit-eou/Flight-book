@@ -18,6 +18,8 @@ export class FlightsComponent implements OnInit {
   loading = false;
   depIata = '';
   arrIata = '';
+  depDate = '';
+  arrDate = '';
   searched = false;
   currentPage = 1;
   pageSize = 9;
@@ -76,10 +78,11 @@ export class FlightsComponent implements OnInit {
   }
 
   updatePagination() {
-    this.totalPages = Math.ceil(this.flights.length / this.pageSize) || 1;
+    const source = this.filteredFlights;
+    this.totalPages = Math.ceil(source.length / this.pageSize) || 1;
     if (this.currentPage > this.totalPages) this.currentPage = 1;
     const start = (this.currentPage - 1) * this.pageSize;
-    this.paginatedFlights = this.flights.slice(start, start + this.pageSize);
+    this.paginatedFlights = source.slice(start, start + this.pageSize);
   }
 
   nextPage() {
@@ -167,5 +170,12 @@ export class FlightsComponent implements OnInit {
 
     this.closeFlightDetails();
     this.router.navigate(['/booking-flow']);
+  }
+
+  get filteredFlights(): any[] {
+    return this.flights.filter(f => {
+      if (this.depDate && f.flight_date !== this.depDate) return false;
+      return true;
+    });
   }
 }

@@ -5,6 +5,9 @@ import com.flightbooking.model.dto.FlightRequest;
 import com.flightbooking.model.dto.FlightResponse;
 import com.flightbooking.service.FlightService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import java.util.*;
+
 
 import java.util.List;
 
@@ -31,5 +34,13 @@ public class FlightController {
 
         List<Object> flights = flightService.getFlights(request.getDepIata(), request.getArrIata());
         return new FlightResponse(flights);
+    }
+
+    @DeleteMapping("/cache")
+    public ResponseEntity<Map<String, Object>> clearCache(
+        @RequestHeader("Authorization") String authHeader
+    ) {
+        flightService.clearCache(authHeader);
+        return ResponseEntity.ok(Map.of("message", "Flight cache cleared successfully"));
     }
 }

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import java.time.LocalDate;
+
 import java.util.*;
 
 @Repository
@@ -26,8 +28,8 @@ public class FlightDAOImpl implements FlightDAO {
         // Configuration de timeouts de 4 secondes pour éviter que l'API externe ne bloque le thread indéfiniment
         org.springframework.http.client.SimpleClientHttpRequestFactory factory = 
             new org.springframework.http.client.SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(4000);
-        factory.setReadTimeout(4000);
+        factory.setConnectTimeout(10000);
+        factory.setReadTimeout(10000);
         this.restTemplate = new RestTemplate(factory);
     }
 
@@ -166,9 +168,13 @@ public class FlightDAOImpl implements FlightDAO {
             cachedFlights = flightRepository.findAll();
         }
 
+        String today = LocalDate.now().toString();
+
         List<Object> result = new ArrayList<>();
         for (Flight flight : cachedFlights) {
-            result.add(convertToMap(flight));
+            if (flight.getFlightDate() != null && flight.getFlightDate().compareTo(today) >= 0) {
+                result.add(convertToMap(flight));
+            }
         }
         return result;
     }
@@ -200,4 +206,27 @@ public class FlightDAOImpl implements FlightDAO {
 
         return map;
     }
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public void clearCache() {
+        flightRepository.deleteUnreferencedFlights();
+        System.out.println("Flight cache cleared.");
+
+        // Immediately repopulate with fresh flights from AviationStack
+        try {
+            UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(apiUrl)
+                .queryParam("access_key", apiKey);
+
+            Map response = restTemplate.getForObject(builder.toUriString(), Map.class);
+            if (response != null && response.get("data") != null) {
+                List<Object> apiFlights = (List<Object>) response.get("data");
+                saveFlightsToCache(apiFlights);
+                System.out.println("Cache repopulated with " + apiFlights.size() + " fresh flights.");
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to repopulate cache: " + e.getMessage());
+        }
+    }
+
 }
