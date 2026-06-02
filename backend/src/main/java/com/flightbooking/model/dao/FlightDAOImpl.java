@@ -168,9 +168,13 @@ public class FlightDAOImpl implements FlightDAO {
             cachedFlights = flightRepository.findAll();
         }
 
+        String today = LocalDate.now().toString();
+
         List<Object> result = new ArrayList<>();
         for (Flight flight : cachedFlights) {
-            result.add(convertToMap(flight));
+            if (flight.getFlightDate() != null && flight.getFlightDate().compareTo(today) >= 0) {
+                result.add(convertToMap(flight));
+            }
         }
         return result;
     }
