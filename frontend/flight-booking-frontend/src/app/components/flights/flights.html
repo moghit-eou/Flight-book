@@ -23,6 +23,16 @@
         </div>
       </div>
 
+      <div class="pill-divider"></div>
+
+      <div class="pill-field">
+        <span class="pill-icon">📅</span>
+        <div class="pill-input-group">
+          <label>Départ</label>
+          <input type="date" [(ngModel)]="depDate" (change)="updatePagination()" />
+        </div>
+      </div>
+
       <button class="pill-btn" (click)="search()" [disabled]="loading">
         <span>🔍</span>
         {{ loading ? '...' : 'Explorer' }}

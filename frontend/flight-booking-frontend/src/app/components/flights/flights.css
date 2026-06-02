@@ -94,9 +94,21 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
+.pill-input-group input[type="date"] {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  width: 130px;
+  color-scheme: dark;
+}
 
 .pill-btn:hover { background: #c73652; transform: scale(1.02); }
 .pill-btn:disabled { background: #555; cursor: not-allowed; transform: none; }
+
+
 
 .container {
   max-width: 1200px;
