@@ -10,3 +10,4 @@ backend/target/
 Thumbs.db
 
 .env
+/test_flight_api.sh

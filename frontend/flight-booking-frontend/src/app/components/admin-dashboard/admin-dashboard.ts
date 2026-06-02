@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { ReviewService } from '../../services/review';
+import { FlightService } from '../../services/flight';
 
 
 
@@ -28,7 +29,9 @@ export class AdminDashboardComponent implements OnInit {
     private router: Router,
     private toastService: ToastService, 
     private cdr: ChangeDetectorRef,
-    private reviewService: ReviewService
+    private reviewService: ReviewService,
+    private flightService: FlightService
+
   ) {}
 
   ngOnInit() {
@@ -104,5 +107,13 @@ export class AdminDashboardComponent implements OnInit {
     },
     error: () => this.toastService.show('Erreur lors de la mise à jour', 'error')
   });
+  }
+
+  refreshFlightCache() {
+    if (!confirm('Vider le cache des vols ? La prochaine recherche appellera l\'API externe.')) return;
+    this.flightService.clearCache().subscribe({
+      next: () => this.toastService.show('Cache des vols vidé avec succès ✅', 'success'),
+      error: () => this.toastService.show('Erreur lors du vidage du cache', 'error')
+    });
   }
 }

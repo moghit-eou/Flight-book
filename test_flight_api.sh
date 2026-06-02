@@ -1,3 +1,3 @@
 curl --request GET \
-  --url 'https://api.aviationstack.com/v1/flights?access_key={put_key_here}' \
+  --url 'https://api.aviationstack.com/v1/flights?access_key=xxx' \
   --header 'Accept: application/json'
