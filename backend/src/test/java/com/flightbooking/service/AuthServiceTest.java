@@ -5,7 +5,6 @@ import com.flightbooking.model.dto.AuthRequest;
 import com.flightbooking.model.dto.AuthResponse;
 import com.flightbooking.model.entity.User;
 import com.flightbooking.model.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,25 +39,27 @@ class AuthServiceTest {
 
     // ── shared helpers ──────────────────────────────────────────────────────
 
-    /** Builds a minimal AuthRequest (register shape) */
+    /**
+     * AuthRequest has no setters — fields are only exposed via getters.
+     * We override the getters inline using an anonymous subclass.
+     */
     private AuthRequest buildRegisterRequest(String email, String password) {
-        AuthRequest req = new AuthRequest();
-        req.setEmail(email);
-        req.setPassword(password);
-        req.setFirstName("Youssef");
-        req.setLastName("Benali");
-        req.setCity("Casablanca");
-        req.setCountry("Morocco");
-        req.setPhoneNumber("+212600000000");
-        return req;
+        return new AuthRequest() {
+            @Override public String getEmail()       { return email; }
+            @Override public String getPassword()    { return password; }
+            @Override public String getFirstName()   { return "Youssef"; }
+            @Override public String getLastName()    { return "Benali"; }
+            @Override public String getCity()        { return "Casablanca"; }
+            @Override public String getCountry()     { return "Morocco"; }
+            @Override public String getPhoneNumber() { return "+212600000000"; }
+        };
     }
 
-    /** Builds a minimal AuthRequest (login shape) */
     private AuthRequest buildLoginRequest(String email, String password) {
-        AuthRequest req = new AuthRequest();
-        req.setEmail(email);
-        req.setPassword(password);
-        return req;
+        return new AuthRequest() {
+            @Override public String getEmail()    { return email; }
+            @Override public String getPassword() { return password; }
+        };
     }
 
     /** Creates a persisted-like User with a BCrypt-hashed password */
@@ -89,10 +90,10 @@ class AuthServiceTest {
         // assertEquals — role is always USER from the register endpoint
         assertEquals("USER", resp.getRole());
 
-        // assertEquals — firstName is mapped correctly
+        // assertEquals — firstName is mapped correctly from the request
         assertEquals("Youssef", resp.getFirstName());
 
-        // assertTrue — a UUID token was generated (not blank)
+        // assertTrue — a UUID token was generated (not null, not blank)
         assertTrue(resp.getToken() != null && !resp.getToken().isBlank());
     }
 
@@ -100,11 +101,10 @@ class AuthServiceTest {
     void register_withNewEmail_passwordIsStoredHashed() {
         when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
 
-        // Capture the User passed to save()
         when(userRepository.save(any(User.class))).thenAnswer(inv -> {
             User saved = inv.getArgument(0);
 
-            // assertTrue — stored password must NOT equal the raw password
+            // assertTrue — stored password must be a valid BCrypt hash, never plaintext
             assertTrue(encoder.matches("Secret99!", saved.getPassword()),
                     "Stored password must be a valid BCrypt hash of the raw password");
 
@@ -201,9 +201,8 @@ class AuthServiceTest {
         when(userRepository.findByEmail("youssef@skybook.com")).thenReturn(Optional.of(stored));
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        AuthResponse first  = authService.login(buildLoginRequest("youssef@skybook.com", "Secret99!"));
+        AuthResponse first = authService.login(buildLoginRequest("youssef@skybook.com", "Secret99!"));
 
-        // Reset the stored token to simulate a second login call
         stored.setToken(first.getToken());
         AuthResponse second = authService.login(buildLoginRequest("youssef@skybook.com", "Secret99!"));
 
