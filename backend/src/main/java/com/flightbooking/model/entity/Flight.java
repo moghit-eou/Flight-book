@@ -8,6 +8,7 @@ import lombok.*;
     @Index(name = "idx_flight_dep_arr", columnList = "depIata, arrIata")
 })
 @Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
