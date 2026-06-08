@@ -102,68 +102,37 @@ public class FlightDAOImpl implements FlightDAO {
         return cachedFlights;
     }
 
-    @SuppressWarnings("unchecked")
     private void saveFlightsToCache(List<Object> apiFlights) {
         if (apiFlights == null) return;
         for (Object obj : apiFlights) {
             if (!(obj instanceof Map)) continue;
             try {
-                Map<String, Object> fMap = (Map<String, Object>) obj;
-                
-                String flightDate = (String) fMap.get("flight_date");
-                String flightStatus = (String) fMap.get("flight_status");
-                
-                Map<String, Object> departure = (Map<String, Object>) fMap.get("departure");
-                String depIata = departure != null ? (String) departure.get("iata") : null;
-                String depAirport = departure != null ? (String) departure.get("airport") : null;
-                String depScheduled = departure != null ? (String) departure.get("scheduled") : null;
-                
-                Map<String, Object> arrival = (Map<String, Object>) fMap.get("arrival");
-                String arrIata = arrival != null ? (String) arrival.get("iata") : null;
-                String arrAirport = arrival != null ? (String) arrival.get("airport") : null;
-                String arrScheduled = arrival != null ? (String) arrival.get("scheduled") : null;
-                
-                Map<String, Object> airline = (Map<String, Object>) fMap.get("airline");
-                String airlineName = airline != null ? (String) airline.get("name") : null;
-                
-                Map<String, Object> flightInfo = (Map<String, Object>) fMap.get("flight");
-                String flightIata = flightInfo != null ? (String) flightInfo.get("iata") : null;
-                
-                if (depIata == null || arrIata == null) continue;
-                
-                // Recherche par code de vol et date de vol pour éviter les doublons                
-                Optional<Flight> existingOpt = flightRepository.findByFlightIataAndFlightDate(flightIata, flightDate);
+                @SuppressWarnings("unchecked")
+                AviationStackFlightAdapter adapter = new AviationStackFlightAdapter(
+                    (Map<String, Object>) obj
+                );
 
-                Flight flight;
-                if (existingOpt.isPresent()) {
-                    // Update existing ->  setters still work thanks to @Setter
-                    flight = existingOpt.get();
-                    flight.setFlightDate(flightDate);
-                    flight.setFlightStatus(flightStatus);
-                    flight.setDepIata(depIata.toUpperCase());
-                    flight.setArrIata(arrIata.toUpperCase());
-                    flight.setDepAirport(depAirport);
-                    flight.setArrAirport(arrAirport);
-                    flight.setDepScheduled(depScheduled);
-                    flight.setArrScheduled(arrScheduled);
-                    flight.setAirlineName(airlineName);
-                    flight.setFlightIata(flightIata);
-                } else {
-                    // New flight ->  use the Builder
-                    flight = Flight.builder()
-                        .flightDate(flightDate)
-                        .flightStatus(flightStatus)
-                        .depIata(depIata.toUpperCase())
-                        .arrIata(arrIata.toUpperCase())
-                        .depAirport(depAirport)
-                        .arrAirport(arrAirport)
-                        .depScheduled(depScheduled)
-                        .arrScheduled(arrScheduled)
-                        .airlineName(airlineName)
-                        .flightIata(flightIata)
-                        .build();
-                }
-                
+                Flight adapted = adapter.toFlight();
+                if (adapted == null) continue; // depIata or arrIata was null
+
+                Optional<Flight> existingOpt = flightRepository
+                    .findByFlightIataAndFlightDate(adapter.getFlightIata(), adapter.getFlightDate());
+
+                Flight flight = existingOpt
+                    .map(f -> f.toBuilder())
+                    .orElseGet(() -> adapted.toBuilder())
+                    .flightDate(adapted.getFlightDate())
+                    .flightStatus(adapted.getFlightStatus())
+                    .depIata(adapted.getDepIata())
+                    .arrIata(adapted.getArrIata())
+                    .depAirport(adapted.getDepAirport())
+                    .arrAirport(adapted.getArrAirport())
+                    .depScheduled(adapted.getDepScheduled())
+                    .arrScheduled(adapted.getArrScheduled())
+                    .airlineName(adapted.getAirlineName())
+                    .flightIata(adapted.getFlightIata())
+                    .build();
+
                 flightRepository.save(flight);
             } catch (Exception e) {
                 System.err.println("Erreur d'enregistrement d'un vol en cache: " + e.getMessage());
