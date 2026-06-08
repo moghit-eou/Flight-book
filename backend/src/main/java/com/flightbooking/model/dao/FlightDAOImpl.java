@@ -131,20 +131,38 @@ public class FlightDAOImpl implements FlightDAO {
                 
                 if (depIata == null || arrIata == null) continue;
                 
-                // Recherche par code de vol et date de vol pour éviter les doublons
+                // Recherche par code de vol et date de vol pour éviter les doublons                
                 Optional<Flight> existingOpt = flightRepository.findByFlightIataAndFlightDate(flightIata, flightDate);
-                Flight flight = existingOpt.orElseGet(Flight::new);
-                
-                flight.setFlightDate(flightDate);
-                flight.setFlightStatus(flightStatus);
-                flight.setDepIata(depIata.toUpperCase());
-                flight.setArrIata(arrIata.toUpperCase());
-                flight.setDepAirport(depAirport);
-                flight.setArrAirport(arrAirport);
-                flight.setDepScheduled(depScheduled);
-                flight.setArrScheduled(arrScheduled);
-                flight.setAirlineName(airlineName);
-                flight.setFlightIata(flightIata);
+
+                Flight flight;
+                if (existingOpt.isPresent()) {
+                    // Update existing ->  setters still work thanks to @Setter
+                    flight = existingOpt.get();
+                    flight.setFlightDate(flightDate);
+                    flight.setFlightStatus(flightStatus);
+                    flight.setDepIata(depIata.toUpperCase());
+                    flight.setArrIata(arrIata.toUpperCase());
+                    flight.setDepAirport(depAirport);
+                    flight.setArrAirport(arrAirport);
+                    flight.setDepScheduled(depScheduled);
+                    flight.setArrScheduled(arrScheduled);
+                    flight.setAirlineName(airlineName);
+                    flight.setFlightIata(flightIata);
+                } else {
+                    // New flight ->  use the Builder
+                    flight = Flight.builder()
+                        .flightDate(flightDate)
+                        .flightStatus(flightStatus)
+                        .depIata(depIata.toUpperCase())
+                        .arrIata(arrIata.toUpperCase())
+                        .depAirport(depAirport)
+                        .arrAirport(arrAirport)
+                        .depScheduled(depScheduled)
+                        .arrScheduled(arrScheduled)
+                        .airlineName(airlineName)
+                        .flightIata(flightIata)
+                        .build();
+                }
                 
                 flightRepository.save(flight);
             } catch (Exception e) {
