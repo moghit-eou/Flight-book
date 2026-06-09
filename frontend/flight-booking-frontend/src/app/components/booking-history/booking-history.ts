@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BookingService } from '../../services/booking';
 import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
+import { ConfirmService } from '../../services/confirm.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { ReviewService } from '../../services/review';
 import { FormsModule } from '@angular/forms';
@@ -28,6 +29,7 @@ constructor(
   private bookingService: BookingService,
   private router: Router,
   private toastService: ToastService,
+  private confirmService: ConfirmService,
   private cdr: ChangeDetectorRef,
   private reviewService: ReviewService
 
@@ -59,17 +61,19 @@ loadHistory() {
 }
 
   cancelReservation(id: number) {
-    if (confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
-      this.bookingService.cancelBooking(id).subscribe({
-        next: () => {
-          this.toastService.show("Votre réservation a été annulée.", "success");
-          this.loadHistory(); // Recharger pour rafraîchir le statut
-        },
-        error: (err) => {
-          this.toastService.show("Erreur lors de l'annulation : " + (err?.error?.message || "Erreur serveur"), "error");
-        }
-      });
-    }
+    this.confirmService.confirm("Êtes-vous sûr de vouloir annuler cette réservation ?").then(confirmed => {
+      if (confirmed) {
+        this.bookingService.cancelBooking(id).subscribe({
+          next: () => {
+            this.toastService.show("Votre réservation a été annulée.", "success");
+            this.loadHistory(); // Recharger pour rafraîchir le statut
+          },
+          error: (err) => {
+            this.toastService.show("Erreur lors de l'annulation : " + (err?.error?.message || "Erreur serveur"), "error");
+          }
+        });
+      }
+    });
   }
 
   openBoardingPass(booking: any) {

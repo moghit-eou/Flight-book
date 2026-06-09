@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BookingService } from '../../services/booking';
 import { Router } from '@angular/router';
 import { ToastService } from '../../services/toast.service';
+import { ConfirmService } from '../../services/confirm.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { ReviewService } from '../../services/review';
 import { FlightService } from '../../services/flight';
@@ -28,6 +29,7 @@ export class AdminDashboardComponent implements OnInit {
     private bookingService: BookingService, 
     private router: Router,
     private toastService: ToastService, 
+    private confirmService: ConfirmService,
     private cdr: ChangeDetectorRef,
     private reviewService: ReviewService,
     private flightService: FlightService
@@ -84,36 +86,44 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   cancelReservation(id: number) {
-    if (confirm("Confirmez-vous l'annulation en tant qu'administrateur ?")) {
-      this.bookingService.cancelBooking(id).subscribe({
-        next: () => {
-          this.toastService.show("Réservation annulée (Admin).", "success");
-          this.loadData();
-        },
-        error: (err) => {
-          this.toastService.show("Erreur annulation admin : " + (err?.error?.message || "Erreur serveur"), "error");
-        }
-      });
-    }
+    this.confirmService.confirm("Confirmez-vous l'annulation en tant qu'administrateur ?").then(confirmed => {
+      if (confirmed) {
+        this.bookingService.cancelBooking(id).subscribe({
+          next: () => {
+            this.toastService.show("Réservation annulée (Admin).", "success");
+            this.loadData();
+          },
+          error: (err) => {
+            this.toastService.show("Erreur annulation admin : " + (err?.error?.message || "Erreur serveur"), "error");
+          }
+        });
+      }
+    });
   }
 
   markAsFlewBooking(id: number) {
-  if (!confirm('Marquer ce vol comme effectué ? Les passagers ne pourront plus annuler.')) return;
-  this.bookingService.markAsFlewBooking(id).subscribe({
-    next: () => {
-      const b = this.bookings.find((x: any) => x.id === id);
-      if (b) b.status = 'FLEW';
-      this.toastService.show('Vol marqué comme effectué ✈️', 'success');
-    },
-    error: () => this.toastService.show('Erreur lors de la mise à jour', 'error')
-  });
+    this.confirmService.confirm('Marquer ce vol comme effectué ? Les passagers ne pourront plus annuler.').then(confirmed => {
+      if (confirmed) {
+        this.bookingService.markAsFlewBooking(id).subscribe({
+          next: () => {
+            const b = this.bookings.find((x: any) => x.id === id);
+            if (b) b.status = 'FLEW';
+            this.toastService.show('Vol marqué comme effectué ✈️', 'success');
+          },
+          error: () => this.toastService.show('Erreur lors de la mise à jour', 'error')
+        });
+      }
+    });
   }
 
   refreshFlightCache() {
-    if (!confirm('Vider le cache des vols ? La prochaine recherche appellera l\'API externe.')) return;
-    this.flightService.clearCache().subscribe({
-      next: () => this.toastService.show('Cache des vols vidé avec succès ✅', 'success'),
-      error: () => this.toastService.show('Erreur lors du vidage du cache', 'error')
+    this.confirmService.confirm("Vider le cache des vols ? La prochaine recherche appellera l'API externe.").then(confirmed => {
+      if (confirmed) {
+        this.flightService.clearCache().subscribe({
+          next: () => this.toastService.show('Cache des vols vidé avec succès ✅', 'success'),
+          error: () => this.toastService.show('Erreur lors du vidage du cache', 'error')
+        });
+      }
     });
   }
 }
