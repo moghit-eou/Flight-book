@@ -28,7 +28,7 @@
       
       <!-- ÉTAPE 1 : INFOS VOYAGEUR -->
       <div *ngIf="currentStep === 1" class="step-panel animate-fade">
-        <h2>🧑‍✈️ Qui voyage ?</h2>
+        <h2><i class="ti ti-user-check"></i> Qui voyage ?</h2>
         <p class="step-desc">Veuillez saisir les informations du passager telles qu'elles apparaissent sur sa pièce d'identité.</p>
 
         <form [formGroup]="passengerForm" class="passenger-form">
@@ -88,7 +88,7 @@
 
       <!-- ÉTAPE 2 : CHOIX DU SIÈGE -->
       <div *ngIf="currentStep === 2" class="step-panel animate-fade">
-        <h2>💺 Choisissez votre siège</h2>
+        <h2><i class="ti ti-armchair"></i> Choisissez votre siège</h2>
         <p class="step-desc">Sélectionnez le siège de votre choix. Les sièges <strong>Premium</strong> situés à l'avant offrent plus d'espace pour les jambes (+25$).</p>
 
         <!-- Légende des sièges -->
@@ -153,7 +153,7 @@
 
       <!-- ÉTAPE 3 : PERSONALISATION / ADD-ONS -->
       <div *ngIf="currentStep === 3" class="step-panel animate-fade">
-        <h2>✨ Personnalisez votre voyage</h2>
+        <h2><i class="ti ti-sparkles"></i> Personnalisez votre voyage</h2>
         <p class="step-desc">Ajoutez des options de confort exclusives pour un voyage en toute sérénité.</p>
 
         <div class="addons-list">
@@ -164,7 +164,7 @@
             </div>
             <div class="addon-info">
               <span class="badge-addon">Recommandé</span>
-              <h3>🏃‍♂️ Embarquement Prioritaire</h3>
+              <h3><i class="ti ti-run"></i> Embarquement Prioritaire</h3>
               <p>Évitez les files d'attente. Soyez le premier à embarquer et installez vos bagages en cabine en priorité.</p>
             </div>
             <div class="addon-price">+US$15.00</div>
@@ -177,7 +177,7 @@
             </div>
             <div class="addon-info">
               <span class="badge-addon">Sérénité</span>
-              <h3>🛡️ Assurance Voyage Intégrale</h3>
+              <h3><i class="ti ti-shield-check"></i> Assurance Voyage Intégrale</h3>
               <p>Remboursement garanti à 100% en cas d'annulation médicale ou retard de bagages jusqu'à 2 000 US$.</p>
             </div>
             <div class="addon-price">+US$20.00</div>
@@ -187,7 +187,7 @@
 
       <!-- ÉTAPE 4 : CHECKOUT / PAIEMENT -->
       <div *ngIf="currentStep === 4" class="step-panel animate-fade">
-        <h2>💳 Finalisez votre paiement</h2>
+        <h2><i class="ti ti-credit-card"></i> Finalisez votre paiement</h2>
         <p class="step-desc">Veuillez renseigner vos coordonnées bancaires (simulation sécurisée 3D Secure).</p>
 
         <!-- Carte Bancaire Stylisée Animée -->
@@ -248,11 +248,11 @@
       <!-- Boutons de Navigation inférieure -->
       <div class="wizard-buttons">
         <button class="btn-secondary" (click)="prevStep()" *ngIf="currentStep > 1">
-          ← Retour
+          <i class="ti ti-arrow-left"></i> Retour
         </button>
         <div style="flex: 1"></div>
         <button class="btn-primary" (click)="nextStep()" *ngIf="currentStep < 4">
-          Continuer
+          Continuer <i class="ti ti-arrow-right"></i>
         </button>
         <button class="btn-success" [disabled]="loading" (click)="confirmPayment()" *ngIf="currentStep === 4">
           {{ loading ? 'Validation en cours...' : 'Confirmer & Payer US$' + getTotalPrice() }}
@@ -264,12 +264,12 @@
     <!-- Barre latérale de récapitulatif détaillé -->
     <div class="booking-sidebar">
       <div class="sidebar-card">
-        <h3>📊 Récapitulatif du prix</h3>
+        <h3><i class="ti ti-receipt"></i> Récapitulatif du prix</h3>
         
         <div class="sidebar-flight-summary">
           <div class="airline-logo">{{ flightData.flight.airline?.name }}</div>
           <div class="sidebar-route">
-            <strong>{{ flightData.flight.departure?.iata }}</strong> ✈ <strong>{{ flightData.flight.arrival?.iata }}</strong>
+            <strong>{{ flightData.flight.departure?.iata }}</strong> <i class="ti ti-plane"></i> <strong>{{ flightData.flight.arrival?.iata }}</strong>
           </div>
           <div class="sidebar-class">{{ flightData.classType }}</div>
         </div>
@@ -284,11 +284,11 @@
             <strong>+US${{ selectedSeat.price }}.00</strong>
           </div>
           <div class="breakdown-item" *ngIf="priorityBoarding">
-            <span>🏃‍♂️ Embarquement Prioritaire</span>
+            <span><i class="ti ti-run"></i> Embarquement Prioritaire</span>
             <strong>+US$15.00</strong>
           </div>
           <div class="breakdown-item" *ngIf="travelInsurance">
-            <span>🛡️ Assurance Voyage</span>
+            <span><i class="ti ti-shield-check"></i> Assurance Voyage</span>
             <strong>+US$20.00</strong>
           </div>
         </div>
@@ -304,7 +304,7 @@
   <!-- ÉTAPE 5 : CONFIRMATION DE SUCCÈS & CARTE D'EMBARQUEMENT PDF -->
   <div class="booking-success-view animate-fade" *ngIf="currentStep === 5 && createdBooking">
     <div class="success-header">
-      <div class="check-animation">✔</div>
+      <div class="check-animation"><i class="ti ti-check"></i></div>
       <h1>Réservation validée avec succès !</h1>
       <p>Votre voyage est prêt. Téléchargez ou imprimez votre carte d'embarquement ci-dessous.</p>
     </div>
@@ -312,7 +312,7 @@
     <!-- Carte d'embarquement Stylisée (Premium Ticket) -->
     <div class="boarding-pass-ticket" id="printable-boarding-pass">
       <div class="ticket-header">
-        <div class="ticket-logo">✈ SkyBook</div>
+        <div class="ticket-logo"><i class="ti ti-plane"></i> SkyBook</div>
         <div class="ticket-class">{{ createdBooking.classType }}</div>
       </div>
       <div class="ticket-body">
@@ -321,7 +321,7 @@
             <span class="code">{{ createdBooking.departureIata }}</span>
             <span class="time">{{ createdBooking.departureTime | date:'HH:mm' }}</span>
           </div>
-          <div class="ticket-route-arrow">➔</div>
+          <div class="ticket-route-arrow"><i class="ti ti-arrow-right"></i></div>
           <div class="ticket-airport">
             <span class="code">{{ createdBooking.arrivalIata }}</span>
             <span class="time">{{ createdBooking.arrivalTime | date:'HH:mm' }}</span>
@@ -389,13 +389,13 @@
     <!-- Actions post-réservation -->
     <div class="success-actions-bar">
       <button class="btn-secondary" (click)="navigateToFlights()">
-        🔍 Rechercher un autre vol
+        <i class="ti ti-search"></i> Rechercher un autre vol
       </button>
       <button class="btn-primary" (click)="printBoardingPass()">
-        🖨️ Télécharger en PDF / Imprimer
+        <i class="ti ti-printer"></i> Télécharger en PDF / Imprimer
       </button>
       <button class="btn-success" (click)="navigateToHistory()">
-        📅 Voir mes réservations
+        <i class="ti ti-calendar-check"></i> Voir mes réservations
       </button>
     </div>
   </div>

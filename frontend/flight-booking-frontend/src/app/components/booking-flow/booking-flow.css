@@ -1,4 +1,7 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ======================================
+   SkyBook — Booking Flow
+   Premium Design with Inter Font
+   ====================================== */
 
 .booking-container {
   max-width: 1200px;
@@ -7,7 +10,7 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Barre de progression */
+/* Progress Bar */
 .steps-progress {
   display: flex;
   justify-content: space-between;
@@ -27,12 +30,14 @@
   height: 4px;
   background: #e2e8f0;
   z-index: 1;
+  border-radius: 4px;
 }
 
 .step-progress-fill {
   height: 100%;
-  background: #2563eb;
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 4px;
 }
 
 .step-node {
@@ -57,7 +62,7 @@
   font-weight: 700;
   font-size: 1.05rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .step-node.active .node-circle {
@@ -66,16 +71,16 @@
 }
 
 .step-node.current .node-circle {
-  background: #2563eb;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
   color: white;
   border-color: #2563eb;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15), 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
 .step-node span {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: #64748b;
+  color: #94a3b8;
   margin-top: 0.5rem;
   transition: color 0.3s;
 }
@@ -100,25 +105,34 @@
 
 .booking-main {
   background: white;
-  border-radius: 16px;
+  border-radius: 18px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   padding: 2rem;
   border: 1px solid #f1f5f9;
 }
 
 .step-panel h2 {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: #0f172a;
   margin-bottom: 0.5rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.step-panel h2 i {
+  font-size: 26px;
+  color: #2563eb;
 }
 
 .step-desc {
   color: #64748b;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   margin-bottom: 2rem;
+  line-height: 1.5;
 }
 
-/* Formulaires */
+/* Forms */
 .passenger-form, .payment-form {
   display: flex;
   flex-direction: column;
@@ -145,34 +159,37 @@
 }
 
 .form-group label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: #334155;
+  color: #475569;
+  letter-spacing: 0.2px;
 }
 
 .form-group input, .form-group select {
   padding: 0.8rem 1rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.92rem;
   color: #0f172a;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
   background: #f8fafc;
+  font-family: 'Inter', sans-serif;
 }
 
 .form-group input:focus, .form-group select:focus {
   border-color: #2563eb;
   background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
 .error-msg {
   color: #ef4444;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 500;
 }
 
-/* Plan des sièges */
+/* Seat Plan */
 .seat-legend {
   display: flex;
   justify-content: center;
@@ -185,7 +202,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 500;
   color: #475569;
 }
@@ -193,13 +210,13 @@
 .legend-box {
   width: 20px;
   height: 20px;
-  border-radius: 4px;
+  border-radius: 5px;
   display: inline-block;
   border: 1.5px solid #cbd5e1;
 }
 
 .seat-available-standard { background: #f1f5f9; border-color: #cbd5e1; }
-.seat-available-premium { background: #ebf8ff; border-color: #bee3f8; }
+.seat-available-premium { background: #eff6ff; border-color: #93c5fd; }
 .seat-selected { background: #2563eb; border-color: #2563eb; }
 .seat-occupied { background: #cbd5e1; border-color: #cbd5e1; }
 
@@ -238,10 +255,11 @@
 .cabin-aisle-label {
   position: absolute;
   top: 10px;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: #94a3b8;
   text-transform: uppercase;
   font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .cabin-aisle-label.left { left: 20px; }
@@ -261,7 +279,7 @@
 }
 
 .row-number {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: #94a3b8;
   font-weight: 700;
   width: 20px;
@@ -276,39 +294,41 @@
 .seat-btn {
   width: 38px;
   height: 38px;
-  border-radius: 6px;
+  border-radius: 7px;
   border: 1.5px solid #cbd5e1;
   background: #f8fafc;
   color: #475569;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.15s ease;
+  font-family: 'Inter', sans-serif;
 }
 
 .seat-btn:hover {
   border-color: #94a3b8;
+  transform: scale(1.05);
 }
 
 .seat-btn.premium {
-  background: #ebf8ff;
-  border-color: #bee3f8;
-  color: #2b6cb0;
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
 }
 
 .seat-btn.premium:hover {
-  border-color: #63b3ed;
+  border-color: #60a5fa;
 }
 
 .seat-btn.selected {
   background: #2563eb !important;
   border-color: #2563eb !important;
   color: white !important;
-  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.25);
-  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+  transform: scale(1.08);
 }
 
 .seat-btn.occupied {
@@ -322,7 +342,7 @@
   width: 32px;
 }
 
-/* Options */
+/* Add-ons */
 .addons-list {
   display: flex;
   flex-direction: column;
@@ -335,18 +355,20 @@
   gap: 1.5rem;
   padding: 1.5rem;
   border: 2px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .addon-card:hover {
   border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 }
 
 .addon-card.active {
   border-color: #2563eb;
   background: #f8fafc;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
 .addon-check {
@@ -386,44 +408,54 @@
 .badge-addon {
   background: #fef3c7;
   color: #d97706;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  padding: 0.1rem 0.5rem;
+  padding: 0.15rem 0.5rem;
   border-radius: 10px;
   display: inline-block;
   margin-bottom: 0.4rem;
+  letter-spacing: 0.3px;
 }
 
 .addon-info h3 {
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   color: #0f172a;
   margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+.addon-info h3 i {
+  font-size: 20px;
+  color: #2563eb;
 }
 
 .addon-info p {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: #64748b;
+  line-height: 1.5;
 }
 
 .addon-price {
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #0f172a;
 }
 
-/* Formulaire paiement carte bancaire */
+/* Credit Card Preview */
 .credit-card-preview {
   width: 100%;
   max-width: 360px;
   height: 210px;
   background: linear-gradient(135deg, #1e3a8a, #0f172a);
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 1.8rem;
   color: white;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
   margin: 0 auto 2.5rem;
   position: relative;
   overflow: hidden;
@@ -474,7 +506,7 @@
 }
 
 .card-holder label, .card-expiry label {
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   color: #94a3b8;
   font-weight: 700;
   letter-spacing: 1px;
@@ -490,48 +522,67 @@
 /* Sidebar */
 .sidebar-card {
   background: white;
-  border-radius: 16px;
+  border-radius: 18px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   padding: 1.8rem;
   border: 1px solid #f1f5f9;
+  position: sticky;
+  top: 84px;
 }
 
 .sidebar-card h3 {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   color: #0f172a;
   margin-bottom: 1.2rem;
   border-bottom: 1.5px solid #f1f5f9;
   padding-bottom: 0.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sidebar-card h3 i {
+  font-size: 20px;
+  color: #2563eb;
 }
 
 .sidebar-flight-summary {
   background: #f8fafc;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 1.2rem;
   border: 1px solid #f1f5f9;
 }
 
 .airline-logo {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #64748b;
   margin-bottom: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .sidebar-route {
   font-size: 1.05rem;
   color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sidebar-route i {
+  font-size: 16px;
+  color: #2563eb;
 }
 
 .sidebar-class {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   background: #eff6ff;
   color: #1d4ed8;
   display: inline-block;
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
-  font-weight: 600;
+  font-weight: 700;
   margin-top: 0.3rem;
 }
 
@@ -545,12 +596,17 @@
 .breakdown-item {
   display: flex;
   justify-content: space-between;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: #64748b;
+  align-items: center;
+}
+.breakdown-item i {
+  font-size: 14px;
 }
 
 .breakdown-item strong {
   color: #0f172a;
+  font-weight: 700;
 }
 
 .total-row {
@@ -574,7 +630,7 @@
   color: #0f172a;
 }
 
-/* Wizard Button Navigations */
+/* Wizard Buttons */
 .wizard-buttons {
   display: flex;
   margin-top: 2rem;
@@ -585,24 +641,39 @@
 .btn-primary, .btn-secondary, .btn-success {
   border: none;
   padding: 0.8rem 2rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.btn-primary { background: #2563eb; color: white; }
-.btn-primary:hover { background: #1d4ed8; }
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+.btn-primary:hover { background: linear-gradient(135deg, #1d4ed8, #1e40af); transform: translateY(-1px); }
 
-.btn-secondary { background: #f1f5f9; color: #475569; }
+.btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+}
 .btn-secondary:hover { background: #e2e8f0; }
 
-.btn-success { background: #10b981; color: white; }
-.btn-success:hover { background: #059669; }
-.btn-success:disabled { background: #a7f3d0; cursor: not-allowed; }
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+.btn-success:hover { background: linear-gradient(135deg, #059669, #047857); transform: translateY(-1px); }
+.btn-success:disabled { background: #a7f3d0; cursor: not-allowed; box-shadow: none; transform: none; }
 
-/* CONFIRMATION DE SUCCÈS (Ticket d'embarquement stylisé) */
+/* ====== Success & Boarding Pass ====== */
 .booking-success-view {
   max-width: 680px;
   margin: 0 auto;
@@ -619,10 +690,10 @@
 }
 
 .check-animation {
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
-  background: #d1fae5;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
   color: #10b981;
   font-size: 2rem;
   display: flex;
@@ -630,24 +701,29 @@
   justify-content: center;
   margin: 0 auto 1.5rem;
   animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+}
+.check-animation i {
+  font-size: 32px;
 }
 
 .success-header h1 {
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   color: #0f172a;
   margin-bottom: 0.5rem;
+  font-weight: 800;
 }
 
 .success-header p {
   color: #64748b;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
 }
 
-/* Boarding Pass Premium Visual Design */
+/* Boarding Pass */
 .boarding-pass-ticket {
   background: #f8fafc;
   border: 2px solid #e2e8f0;
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
   max-width: 500px;
   margin: 0 auto 3rem;
@@ -656,7 +732,6 @@
   position: relative;
 }
 
-/* Pointillés de détachement */
 .boarding-pass-ticket::after, .boarding-pass-ticket::before {
   content: '';
   position: absolute;
@@ -672,7 +747,7 @@
 .boarding-pass-ticket::after { right: -14px; }
 
 .ticket-header {
-  background: #1e3a8a;
+  background: linear-gradient(135deg, #1e3a8a, #1e40af);
   color: white;
   padding: 1rem 1.5rem;
   display: flex;
@@ -683,15 +758,22 @@
 .ticket-logo {
   font-weight: 800;
   font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ticket-logo i {
+  font-size: 20px;
 }
 
 .ticket-class {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   background: rgba(255,255,255,0.15);
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .ticket-body {
@@ -727,6 +809,9 @@
   font-size: 1.8rem;
   color: #94a3b8;
 }
+.ticket-route-arrow i {
+  font-size: 28px;
+}
 
 .ticket-divider {
   border-bottom: 2px dashed #cbd5e1;
@@ -741,7 +826,7 @@
 }
 
 .detail-cell label {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   color: #94a3b8;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -809,9 +894,13 @@
   animation: fadeIn 0.4s ease;
 }
 
-/* FEUILLE DE STYLE OPTIMISÉE POUR L'IMPRESSION PDF DE LA CARTE D'EMBARQUEMENT */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Print Styles */
 @media print {
-  /* Cacher tout sauf le ticket d'embarquement */
   body * {
     visibility: hidden;
   }
@@ -820,7 +909,6 @@
     visibility: visible;
   }
   
-  /* Ajuster le positionnement du ticket pour l'impression propre */
   #printable-boarding-pass {
     position: absolute;
     left: 50%;
@@ -832,4 +920,3 @@
     border: 1px solid #000;
   }
 }
-

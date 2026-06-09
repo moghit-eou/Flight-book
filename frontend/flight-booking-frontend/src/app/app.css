@@ -1,115 +1,276 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ======================================
+   SkyBook — Navbar & Layout (app.css)
+   Professional Design with Inter Font
+   ====================================== */
 
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: #f0f4f8;
-  min-height: 100vh;
+/* Floating Pill Navbar Wrapper */
+.navbar-container {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 10px 0;
+  background: #ffffff;
+  border-bottom: 1.5px solid #e2e8f0;
+  pointer-events: auto;
 }
 
 .navbar {
-  background: #042C53;
-  height: 64px;
-  padding: 0 2.5rem;
+  background: #2159e2; /* Vibrant royal blue */
+  height: 62px;
+  width: calc(100% - 3rem);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 1px solid rgba(133,183,235,0.15);
+  border-radius: 9999px; /* Pill shape */
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 25px rgba(33, 89, 226, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  pointer-events: auto; /* Enable clicks on the actual navbar */
+  transition: all 0.3s ease;
 }
 
+/* Circular Logo Badge (similar to the white circle + blue icon in image) */
 .nav-logo {
-  color: #fff;
-  font-size: 22px;
-  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-.nav-logo i {
-  color: #85B7EB;
-  font-size: 26px;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.nav-links a {
-  color: #B5D4F4;
+  gap: 12px;
   text-decoration: none;
-  font-size: 14px;
+}
+.logo-icon-badge {
+  width: 38px;
+  height: 38px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+.logo-icon-badge i {
+  color: #2159e2; /* Match royal blue navbar */
+  font-size: 20px;
+}
+.nav-logo:hover .logo-icon-badge {
+  transform: scale(1.05);
+}
+.logo-text {
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Centered Menu Links */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.nav-menu a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 13px;
   font-weight: 500;
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 9999px; /* Rounded pill active states */
   display: flex;
   align-items: center;
-  gap: 7px;
-  transition: background 0.2s, color 0.2s;
-  border: 1px solid transparent;
+  gap: 6px;
+  transition: all 0.2s ease;
 }
-.nav-links a:hover {
-  background: rgba(255,255,255,0.08);
-  color: #fff;
+.nav-menu a i {
+  font-size: 16px;
 }
-.nav-links a.active {
-  color: #fff;
-  background: rgba(255,255,255,0.06);
+.nav-menu a:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+.nav-menu a.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.22);
+  font-weight: 600;
 }
 
+/* Right Actions Block (Connexion / profile / CTA) */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.nav-login-link {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+.nav-login-link:hover {
+  color: #ffffff;
+}
+
+/* Premium White Pill CTA (matches white button on right in image) */
 .nav-cta {
-  background: #185FA5 !important;
-  color: #fff !important;
+  background: #ffffff !important;
+  color: #2159e2 !important; /* Match royal blue navbar */
   font-weight: 600 !important;
-  border: 1px solid #378ADD !important;
-  border-radius: 8px;
+  border: 1.5px solid #ffffff !important;
+  border-radius: 9999px !important;
   padding: 8px 20px !important;
-  letter-spacing: 0.3px;
+  font-size: 12.5px !important;
+  letter-spacing: 0.2px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
 }
 .nav-cta:hover {
-  background: #0C447C !important;
-  border-color: #185FA5 !important;
+  background: transparent !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.15) !important;
 }
 
-.nav-logout {
-  background: transparent;
-  color: #F09595;
-  border: 1px solid rgba(240,149,149,0.4);
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
+/* Profile button when logged in */
+.nav-username {
+  font-size: 13px;
   font-weight: 500;
-  cursor: pointer;
+  color: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
-  gap: 7px;
-  transition: background 0.2s, border-color 0.2s;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  transition: all 0.2s ease;
 }
-.nav-logout:hover {
-  background: rgba(226,75,74,0.15);
-  border-color: #F09595;
+.nav-username:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+.nav-username i {
+  font-size: 18px;
+}
+.nav-chevron {
+  font-size: 12px !important;
+  opacity: 0.6;
 }
 
-/* Toast Notifications */
+/* Responsive Navbar */
+@media (max-width: 768px) {
+  .navbar {
+    width: calc(100% - 1.5rem);
+    padding: 0 1rem;
+    height: 58px;
+  }
+  .navbar-container {
+    padding: 8px 0 0 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .logo-text {
+    display: none; /* Hide brand text to fit small screens */
+  }
+  .nav-menu a span {
+    display: none; /* Hide link text, show icons only */
+  }
+  .nav-login-link span {
+    display: none;
+  }
+  .nav-cta {
+    padding: 7px 15px !important;
+    font-size: 12px !important;
+  }
+  .username-text {
+    display: none; /* Only show profile icon and chevron on mobile */
+  }
+}
+
+/* Dropdown */
+.nav-dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  min-width: 180px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.08);
+  z-index: 999;
+  animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.dropdown-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.3rem 0;
+}
+.dropdown-user-info i {
+  font-size: 18px;
+  color: #64748b;
+}
+.dropdown-name {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.nav-dropdown hr {
+  border: none;
+  border-top: 1px solid #f1f5f9;
+  margin: 0.5rem 0;
+}
+
+.nav-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 0.5rem 0.4rem;
+  color: #ef4444;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+.nav-dropdown a:hover {
+  background: #fef2f2;
+}
+.nav-dropdown a i {
+  font-size: 18px;
+}
+
+/* ====== Toast Notifications ====== */
 .toast-popup {
   position: fixed;
-  top: 80px;
+  top: 84px;
   right: 20px;
   background: #fff;
-  padding: 12px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  padding: 14px 22px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
   display: flex;
   align-items: center;
   gap: 12px;
   z-index: 9999;
-  animation: slideInToast 0.3s ease-out;
+  animation: slideInToast 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   border-left: 4px solid #333;
+  font-family: 'Inter', sans-serif;
 }
 .toast-popup.error { border-left-color: #f43f5e; }
 .toast-popup.success { border-left-color: #10b981; }
@@ -128,6 +289,7 @@ body {
   color: #334155;
   font-weight: 500;
   font-size: 14px;
+  letter-spacing: 0.1px;
 }
 
 @keyframes slideInToast {
@@ -135,35 +297,125 @@ body {
   to { transform: translateX(0); opacity: 1; }
 }
 
-.nav-dropdown {
-  position: absolute;
-  top: 40px;
-  right: 0;
+/* ====== Custom Premium Confirmation Dialog Styles ====== */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 15, 30, 0.4);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: confirmFadeIn 0.25s ease-out;
+  padding: 1.5rem;
+}
+
+.confirm-card {
   background: white;
+  border-radius: 18px;
   border: 1px solid #e2e8f0;
+  max-width: 440px;
+  width: 100%;
+  padding: 1.75rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
+  animation: confirmSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: 'Inter', sans-serif;
+}
+
+.confirm-body {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 1.75rem;
+}
+
+.confirm-icon {
+  width: 44px;
+  height: 44px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+.confirm-content {
+  flex: 1;
+}
+
+.confirm-content h3 {
+  font-size: 1.15rem;
+  font-weight: 750;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.2px;
+}
+
+.confirm-content p {
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-confirm-cancel {
+  background: #f1f5f9;
+  color: #475569;
+  border: none;
+  padding: 10px 20px;
   border-radius: 10px;
-  padding: 0.75rem 1rem;
-  min-width: 160px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  z-index: 999;
-}
-
-.nav-dropdown a {
-  display: block;
-  cursor: pointer;
-  padding: 0.4rem 0;
-  color: #e24b4a;
-  font-size: 14px;
-}
-
-.dropdown-name {
   font-weight: 600;
-  color: #042c53;
-  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+}
+.btn-confirm-cancel:hover {
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
-.nav-username {
-  font-size: 14px;
-  font-weight: 500;
-  color: #f5f5f5;
+.btn-confirm-ok {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+.btn-confirm-ok:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
+}
+.btn-confirm-ok:active {
+  transform: translateY(0);
+}
+
+@keyframes confirmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes confirmSlideUp {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
 }

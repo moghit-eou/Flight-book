@@ -1,12 +1,14 @@
 <div class="hero">
-  <h1>SkyBook</h1>
-  <p>Trouvez vos vols en temps réel</p>
+  <div class="hero-content">
+    <h1>SkyBook</h1>
+    <p>Trouvez vos vols en temps réel</p>
+  </div>
 
   <div class="search-bar">
     <div class="search-pill">
 
       <div class="pill-field">
-        <span class="pill-icon">✈️</span>
+        <i class="ti ti-plane-departure pill-icon-ti"></i>
         <div class="pill-input-group">
           <label>De</label>
           <input [(ngModel)]="depIata" placeholder="Ex: CDG" maxlength="3" (keyup.enter)="search()" />
@@ -16,7 +18,7 @@
       <div class="pill-divider"></div>
 
       <div class="pill-field">
-        <span class="pill-icon">📍</span>
+        <i class="ti ti-map-pin pill-icon-ti"></i>
         <div class="pill-input-group">
           <label>Vers</label>
           <input [(ngModel)]="arrIata" placeholder="Ex: CMN" maxlength="3" (keyup.enter)="search()" />
@@ -25,16 +27,19 @@
 
       <div class="pill-divider"></div>
 
-      <div class="pill-field">
-        <span class="pill-icon">📅</span>
-        <div class="pill-input-group">
+      <div class="pill-field date-field">
+        <i class="ti ti-calendar pill-icon-ti"></i>
+        <div class="pill-input-group" style="position: relative;">
           <label>Départ</label>
-          <input type="date" [(ngModel)]="depDate" (change)="updatePagination()" />
+          <div class="custom-date-display">
+            {{ depDate ? (depDate | date:'dd MMM yyyy') : 'Choisir date' }}
+          </div>
+          <input type="date" [(ngModel)]="depDate" (change)="updatePagination()" class="hidden-date-input" />
         </div>
       </div>
 
       <button class="pill-btn" (click)="search()" [disabled]="loading">
-        <span>🔍</span>
+        <i class="ti ti-search"></i>
         {{ loading ? '...' : 'Explorer' }}
       </button>
 
@@ -45,68 +50,74 @@
 
 
 
-<div class="container">
-  @if (loading) {
-  <div class="loading">
-    <div class="spinner"></div>
-    <p>Chargement des vols...</p>
-  </div>
-  }
+<div class="flights-display-section">
+  <div class="container">
+    @if (loading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Chargement des vols...</p>
+    </div>
+    }
 
-  @if (!loading && flights.length === 0 && searched) {
-  <div class="empty">Aucun vol trouvé. Essayez d'autres codes IATA.</div>
-  }
+    @if (!loading && flights.length === 0 && searched) {
+    <div class="empty">Aucun vol trouvé. Essayez d'autres codes IATA.</div>
+    }
 
-  <div class="flights-grid">
-    @for (flight of paginatedFlights; track $index) {
-    <div class="flight-card" [ngClass]="getStatusClass(flight.flight_status)" (click)="openFlightDetails(flight)">
-      <div class="card-header">
-        <span class="airline">{{ flight.airline?.name }}</span>
-        <span class="flight-num">{{ flight.flight?.iata || flight.flight?.number }}</span>
-      </div>
-      <div class="card-body">
-        <div class="route">
-          <div class="airport">
-            <span class="code">{{ flight.departure?.iata }}</span>
-            <span class="name">{{ flight.departure?.airport }}</span>
-            <span class="time">{{ flight.departure?.scheduled | date:'HH:mm' }}</span>
+    <div class="flights-grid">
+      @for (flight of paginatedFlights; track $index) {
+      <div class="flight-card" [ngClass]="getStatusClass(flight.flight_status)" (click)="openFlightDetails(flight)">
+        <div class="card-header">
+          <span class="airline">{{ flight.airline?.name }}</span>
+          <span class="flight-num">{{ flight.flight?.iata || flight.flight?.number }}</span>
+        </div>
+        <div class="card-body">
+          <div class="route">
+            <div class="airport">
+              <span class="code">{{ flight.departure?.iata }}</span>
+              <span class="name">{{ flight.departure?.airport }}</span>
+              <span class="time">{{ flight.departure?.scheduled | date:'HH:mm' }}</span>
+            </div>
+            <div class="arrow"><i class="ti ti-plane"></i></div>
+            <div class="airport">
+              <span class="code">{{ flight.arrival?.iata }}</span>
+              <span class="name">{{ flight.arrival?.airport }}</span>
+              <span class="time">{{ flight.arrival?.scheduled | date:'HH:mm' }}</span>
+            </div>
           </div>
-          <div class="arrow">✈</div>
-          <div class="airport">
-            <span class="code">{{ flight.arrival?.iata }}</span>
-            <span class="name">{{ flight.arrival?.airport }}</span>
-            <span class="time">{{ flight.arrival?.scheduled | date:'HH:mm' }}</span>
+        </div>
+        <div class="card-footer">
+          <span class="date"><i class="ti ti-calendar-event"></i> {{ flight.flight_date }}</span>
+          <div class="footer-right">
+            <span class="price-badge">US${{ getFlightPrice(flight.flight?.iata || flight.flight?.number) }}</span>
+            <button class="btn-select-flight-card" (click)="openFlightDetails(flight); $event.stopPropagation()">
+              Détails
+            </button>
           </div>
         </div>
       </div>
-      <div class="card-footer">
-        <span class="date">📅 {{ flight.flight_date }}</span>
-        <div class="footer-right">
-          <span class="price-badge">US${{ getFlightPrice(flight.flight?.iata || flight.flight?.number) }}</span>
-          <button class="btn-select-flight-card" (click)="openFlightDetails(flight); $event.stopPropagation()">
-            Détails
-          </button>
-        </div>
-      </div>
+      }
+    </div>
+
+    <!-- Pagination Controls -->
+    @if (flights.length > 0) {
+    <div class="pagination-controls">
+      <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">
+        <i class="ti ti-chevron-left"></i> Précédent
+      </button>
+      <span class="page-info">Page {{ currentPage }} sur {{ totalPages }}</span>
+      <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+        Suivant <i class="ti ti-chevron-right"></i>
+      </button>
     </div>
     }
   </div>
-
-  <!-- Pagination Controls -->
-  @if (flights.length > 0) {
-  <div class="pagination-controls">
-    <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">Précédent</button>
-    <span class="page-info">Page {{ currentPage }} sur {{ totalPages }}</span>
-    <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">Suivant</button>
-  </div>
-  }
 </div>
 
 <!-- Modale de Détails Premium -->
 @if (showDetailsModal && selectedFlight) {
 <div class="modal-overlay" (click)="closeFlightDetails()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    <button class="modal-close" (click)="closeFlightDetails()">✕</button>
+    <button class="modal-close" (click)="closeFlightDetails()"><i class="ti ti-x"></i></button>
 
     <div class="modal-header">
       <h2>Détails du vol</h2>
@@ -115,7 +126,7 @@
     </div>
     <p class="modal-route-name">{{ selectedFlight.departure?.airport }} vers {{ selectedFlight.arrival?.airport }}</p>
     <div class="modal-flight-meta">
-      <span class="badge-depart">Date: {{ selectedFlight.flight_date }}</span>
+      <span class="badge-depart"><i class="ti ti-calendar"></i> {{ selectedFlight.flight_date }}</span>
       <span>Vol: <strong>{{ selectedFlight.flight?.iata || selectedFlight.flight?.number }}</strong></span>
       <span>Compagnie: <strong>{{ selectedFlight.airline?.name }}</strong></span>
     </div>
@@ -137,7 +148,7 @@
       <div class="layover-divider">
         <div class="line"></div>
         <div class="layover-info">
-          <span>⏱️ Escale technique • 1h 45m</span>
+          <i class="ti ti-clock"></i> Escale technique &bull; 1h 45m
         </div>
       </div>
 
@@ -163,9 +174,9 @@
         <h3>Economy Basic</h3>
         <div class="price">US${{ getFlightPrice(selectedFlight.flight?.iata || selectedFlight.flight?.number) }}</div>
         <ul class="features">
-          <li class="included">✔ Sac personnel</li>
-          <li class="excluded">✘ Bagage cabine</li>
-          <li class="excluded">✘ Bagage en soute</li>
+          <li class="included"><i class="ti ti-check"></i> Sac personnel</li>
+          <li class="excluded"><i class="ti ti-x"></i> Bagage cabine</li>
+          <li class="excluded"><i class="ti ti-x"></i> Bagage en soute</li>
         </ul>
       </div>
 
@@ -178,9 +189,9 @@
         <div class="price">US${{ getClassPrice(getFlightPrice(selectedFlight.flight?.iata ||
           selectedFlight.flight?.number), 'Standard') }}</div>
         <ul class="features">
-          <li class="included">✔ Sac personnel</li>
-          <li class="included">✔ Bagage cabine (10kg)</li>
-          <li class="excluded">✘ Bagage en soute</li>
+          <li class="included"><i class="ti ti-check"></i> Sac personnel</li>
+          <li class="included"><i class="ti ti-check"></i> Bagage cabine (10kg)</li>
+          <li class="excluded"><i class="ti ti-x"></i> Bagage en soute</li>
         </ul>
       </div>
 
@@ -195,9 +206,9 @@
         <div class="price">US${{ getClassPrice(getFlightPrice(selectedFlight.flight?.iata ||
           selectedFlight.flight?.number), 'Plus') }}</div>
         <ul class="features">
-          <li class="included">✔ Sac personnel</li>
-          <li class="included">✔ Bagage cabine (10kg)</li>
-          <li class="included">✔ Bagage en soute (23kg)</li>
+          <li class="included"><i class="ti ti-check"></i> Sac personnel</li>
+          <li class="included"><i class="ti ti-check"></i> Bagage cabine (10kg)</li>
+          <li class="included"><i class="ti ti-check"></i> Bagage en soute (23kg)</li>
         </ul>
       </div>
     </div>
