@@ -172,9 +172,8 @@ public class FlightDAOImpl implements FlightDAO {
 
         List<Object> result = new ArrayList<>();
         for (Flight flight : cachedFlights) {
-            if (flight.getFlightDate() != null && flight.getFlightDate().compareTo(today) >= 0) {
-                result.add(convertToMap(flight));
-            }
+            result.add(convertToMap(flight));
+            
         }
         return result;
     }
