@@ -45,7 +45,7 @@ public class AviationStackFlightAdapter {
                 .arrScheduled(arrScheduled)
                 .airlineName(airlineName)
                 .flightIata(flightIata)
-                .build();
+                .build()
     }
 
     @SuppressWarnings("unchecked")
