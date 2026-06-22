@@ -139,4 +139,4 @@ cd frontend/flight-booking-frontend
 npm install
 npm run start
 ```
-L'application sera accessible sur [http://localhost:4200](http://localhost:4200) avec rechargement automatique à chaque modification.
+L'application sera accessible sur [http://localhost:4200](http://localhost:4200) avec rechargement automatique à chaque modification
