@@ -77,6 +77,8 @@ public class Booking {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Flight flight;
 
+    
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -143,4 +145,75 @@ public class Booking {
 
     public Flight getFlight() { return flight; }
     public void setFlight(Flight flight) { this.flight = flight; }
+
+
+
+    public static class Builder {
+        private User user;
+        private String flightNumber;
+        private String departureIata;
+        private String arrivalIata;
+        private String departureTime;
+        private String arrivalTime;
+        private String airlineName;
+        private String passengerName;
+        private String passengerEmail;
+        private String passengerGender;
+        private String passengerDob;
+        private String passengerNationality;
+        private String passengerIdType;
+        private String passengerIdNumber;
+        private String seatNumber;
+        private String classType;
+        private double price;
+        private String baggageOption;
+        private String bookingDate;
+        private Flight flight;
+
+        public Builder user(User user) { this.user = user; return this; }
+        public Builder flightNumber(String v) { this.flightNumber = v; return this; }
+        public Builder departureIata(String v) { this.departureIata = v; return this; }
+        public Builder arrivalIata(String v) { this.arrivalIata = v; return this; }
+        public Builder departureTime(String v) { this.departureTime = v; return this; }
+        public Builder arrivalTime(String v) { this.arrivalTime = v; return this; }
+        public Builder airlineName(String v) { this.airlineName = v; return this; }
+        public Builder passengerName(String v) { this.passengerName = v; return this; }
+        public Builder passengerEmail(String v) { this.passengerEmail = v; return this; }
+        public Builder passengerGender(String v) { this.passengerGender = v; return this; }
+        public Builder passengerDob(String v) { this.passengerDob = v; return this; }
+        public Builder passengerNationality(String v) { this.passengerNationality = v; return this; }
+        public Builder passengerIdType(String v) { this.passengerIdType = v; return this; }
+        public Builder passengerIdNumber(String v) { this.passengerIdNumber = v; return this; }
+        public Builder seatNumber(String v) { this.seatNumber = v; return this; }
+        public Builder classType(String v) { this.classType = v; return this; }
+        public Builder price(double v) { this.price = v; return this; }
+        public Builder baggageOption(String v) { this.baggageOption = v; return this; }
+        public Builder bookingDate(String v) { this.bookingDate = v; return this; }
+        public Builder flight(Flight v) { this.flight = v; return this; }
+
+        public Booking build() {
+            Booking b = new Booking();
+            b.user = this.user;
+            b.flightNumber = this.flightNumber;
+            b.departureIata = this.departureIata;
+            b.arrivalIata = this.arrivalIata;
+            b.departureTime = this.departureTime;
+            b.arrivalTime = this.arrivalTime;
+            b.airlineName = this.airlineName;
+            b.passengerName = this.passengerName;
+            b.passengerEmail = this.passengerEmail;
+            b.passengerGender = this.passengerGender;
+            b.passengerDob = this.passengerDob;
+            b.passengerNationality = this.passengerNationality;
+            b.passengerIdType = this.passengerIdType;
+            b.passengerIdNumber = this.passengerIdNumber;
+            b.seatNumber = this.seatNumber;
+            b.classType = this.classType;
+            b.price = this.price;
+            b.baggageOption = this.baggageOption;
+            b.bookingDate = this.bookingDate;
+            b.flight = this.flight;
+            return b;
+        }
+    }
 }

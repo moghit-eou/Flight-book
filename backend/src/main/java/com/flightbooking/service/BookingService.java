@@ -38,35 +38,37 @@ public class BookingService {
 
     public BookingResponse book(String token, BookingRequest request) {
         User user = validateToken(token);
-        Booking booking = new Booking();
-        booking.setUser(user);
-        booking.setFlightNumber(request.getFlightNumber());
-        booking.setDepartureIata(request.getDepartureIata());
-        booking.setArrivalIata(request.getArrivalIata());
-        booking.setDepartureTime(request.getDepartureTime());
-        booking.setArrivalTime(request.getArrivalTime());
-        booking.setAirlineName(request.getAirlineName());
-        booking.setPassengerName(request.getPassengerName());
-        booking.setPassengerEmail(request.getPassengerEmail());
-        booking.setPassengerGender(request.getPassengerGender());
-        booking.setPassengerDob(request.getPassengerDob());
-        booking.setPassengerNationality(request.getPassengerNationality());
-        booking.setPassengerIdType(request.getPassengerIdType());
-        booking.setPassengerIdNumber(request.getPassengerIdNumber());
-        booking.setSeatNumber(request.getSeatNumber());
-        booking.setClassType(request.getClassType());
-        booking.setPrice(request.getPrice());
-        booking.setBaggageOption(request.getBaggageOption());
-        booking.setBookingDate(request.getBookingDate());
-        System.out.println("\n\n=== Looking for flight: " + request.getFlightNumber() + " ===");
         Optional<Flight> found = flightRepository.findByFlightIata(request.getFlightNumber());
-        System.out.println("=== Found: " + found.isPresent() + " ===");
-        found.ifPresent(f -> {
-            System.out.println("=== Setting flight id: " + f.getId() + " ===");
-            booking.setFlight(f);
-        });
+        Flight flight = found.orElse(null);
+        
+        if (flight != null) {
+            System.out.println("=== Setting flight id: " + flight.getId() + " ===");
+        }
+        
+        Booking booking = new Booking.Builder()
+        .user(user)
+        .flightNumber(request.getFlightNumber())
+        .departureIata(request.getDepartureIata())
+        .arrivalIata(request.getArrivalIata())
+        .departureTime(request.getDepartureTime())
+        .arrivalTime(request.getArrivalTime())
+        .airlineName(request.getAirlineName())
+        .passengerName(request.getPassengerName())
+        .passengerEmail(request.getPassengerEmail())
+        .passengerGender(request.getPassengerGender())
+        .passengerDob(request.getPassengerDob())
+        .passengerNationality(request.getPassengerNationality())
+        .passengerIdType(request.getPassengerIdType())
+        .passengerIdNumber(request.getPassengerIdNumber())
+        .seatNumber(request.getSeatNumber())
+        .classType(request.getClassType())
+        .price(request.getPrice())
+        .baggageOption(request.getBaggageOption())
+        .bookingDate(request.getBookingDate())
+        .flight(found.orElse(null))
+        .build();
+        
         bookingRepository.save(booking);
-        System.out.println("=== Saved booking flight: " + booking.getFlight() + " ===\n\n");
         return new BookingResponse(booking);
     }
 
